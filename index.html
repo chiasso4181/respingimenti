@@ -3,179 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GUI Database Avanzata</title>
+    <title>GUI Database Dogana - Multi Pagina</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
-        /* Raggruppiamo i due box in un contenitore flessibile per schermi grandi */
-        .wrapper { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 0; margin: 0; }
         
-        .container { flex: 1; min-width: 300px; max-width: 450px; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        h2 { text-align: center; margin-top: 0; }
-        .titolo-nuovo { color: #27ae60; }
-        .titolo-modifica { color: #f39c12; }
+        /* --- NUOVO MENU DI NAVIGAZIONE --- */
+        .navbar {
+            background-color: #1f4e79;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .nav-btn {
+            background-color: transparent;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .nav-btn:hover { background-color: #1a4164; }
+        .nav-btn.attivo { background-color: #f39c12; color: #fff; } /* Evidenzia la pagina corrente */
+
+        /* --- STILI DELLE PAGINE --- */
+        .pagina {
+            display: none; /* Di base, tutte le pagine sono nascoste */
+            max-width: 600px; /* Abbiamo allargato la pagina per fare spazio a futuri campi! */
+            margin: 0 auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .pagina.attiva {
+            display: block; /* Solo la pagina con questa classe sarà visibile */
+        }
+
+        h2 { text-align: center; margin-top: 0; font-size: 1.6rem; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;}
+        .titolo-nuovo { color: #27ae60; border-bottom-color: #27ae60;}
+        .titolo-modifica { color: #f39c12; border-bottom-color: #f39c12;}
+        .titolo-cerca { color: #2980b9; border-bottom-color: #2980b9;}
         
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 1rem;}
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem;}
         
-        button { width: 100%; padding: 12px; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; font-weight: bold;}
-        .btn-verde { background-color: #27ae60; }
-        .btn-verde:hover { background-color: #1e8449; }
-        .btn-arancione { background-color: #f39c12; }
-        .btn-arancione:hover { background-color: #d68910; }
+        button.azione { width: 100%; padding: 12px; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; font-weight: bold;}
+        .btn-verde { background-color: #27ae60; } .btn-verde:hover { background-color: #1e8449; }
+        .btn-arancione { background-color: #f39c12; } .btn-arancione:hover { background-color: #d68910; }
+        .btn-blu { background-color: #2980b9; } .btn-blu:hover { background-color: #1a5276; }
         
-        .messaggio-esito { margin-top: 25px; text-align: center; font-size: 1.1rem; min-height: 50px; }
+        .messaggio-esito { margin-top: 20px; text-align: center; font-size: 1.1rem; min-height: 20px; }
         .numero-gigante { display: block; font-size: 2.5rem; font-weight: bold; margin-top: 10px; }
+
+        /* Stili per la tabella di ricerca */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #2980b9; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <!-- ========================================== -->
-    <!-- MASCHERA 1: INSERIMENTO NUOVO DATO         -->
-    <!-- ========================================== -->
-    <div class="container">
-        <h2 class="titolo-nuovo">Nuova Registrazione</h2>
-        
-        <div class="form-group">
-            <label>Nome Utente</label>
-            <input type="text" id="nuovo_nome" placeholder="Es. Mario Rossi">
-        </div>
-        <div class="form-group">
-            <label>Targa</label>
-            <input type="text" id="nuovo_targa" placeholder="Es. TI 12345">
-        </div>
-        <div class="form-group">
-            <label>Peso Constatato (Kg)</label>
-            <input type="number" id="nuovo_peso" placeholder="Es. 3820">
-        </div>
-        
-        <button id="btn-nuovo" class="btn-verde" onclick="inviaNuovoRecord()">Crea Nuovo Record</button>
-        <div id="msg-nuovo" class="messaggio-esito"></div>
-    </div>
+<!-- MENU DI NAVIGAZIONE -->
+<div class="navbar">
+    <button class="nav-btn attivo" id="nav-nuovo" onclick="cambiaPagina('nuovo')">Nuova Registrazione</button>
+    <button class="nav-btn" id="nav-modifica" onclick="cambiaPagina('modifica')">Modifica Registrazione</button>
+    <button class="nav-btn" id="nav-cerca" onclick="cambiaPagina('cerca')">Cerca nel Database</button>
+</div>
 
-    <!-- ========================================== -->
-    <!-- MASCHERA 2: MODIFICA DATO ESISTENTE        -->
-    <!-- ========================================== -->
-    <div class="container">
-        <h2 class="titolo-modifica">Modifica Registrazione</h2>
-        
-        <div class="form-group">
-            <label style="color: #d35400;">Numero Progressivo da Modificare</label>
-            <input type="number" id="mod_numero" placeholder="Es. 5">
-        </div>
-        <!-- Inseriamo una riga di separazione visiva -->
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        
-        <div class="form-group">
-            <label>Nuovo Nome Utente</label>
-            <input type="text" id="mod_nome" placeholder="Es. Luigi Verdi">
-        </div>
-        <div class="form-group">
-            <label>Nuova Targa</label>
-            <input type="text" id="mod_targa" placeholder="Es. TI 98765">
-        </div>
-        <div class="form-group">
-            <label>Nuovo Peso Constatato (Kg)</label>
-            <input type="number" id="mod_peso" placeholder="Es. 4000">
-        </div>
-        
-        <button id="btn-modifica" class="btn-arancione" onclick="inviaModificaRecord()">Aggiorna Record</button>
-        <div id="msg-modifica" class="messaggio-esito"></div>
+<!-- ========================================== -->
+<!-- PAGINA 1: INSERIMENTO NUOVO DATO           -->
+<!-- ========================================== -->
+<div id="pagina-nuovo" class="pagina attiva">
+    <h2 class="titolo-nuovo">Nuova Registrazione</h2>
+    <div class="form-group"><label>Nome Utente</label><input type="text" id="nuovo_nome"></div>
+    <div class="form-group"><label>Targa</label><input type="text" id="nuovo_targa"></div>
+    <div class="form-group"><label>Peso Constatato (Kg)</label><input type="number" id="nuovo_peso"></div>
+    <!-- Qui potrai aggiungere altri form-group in futuro! -->
+    
+    <button id="btn-nuovo" class="azione btn-verde" onclick="inviaNuovoRecord()">Crea Nuovo Record</button>
+    <div id="msg-nuovo" class="messaggio-esito"></div>
+</div>
+
+<!-- ========================================== -->
+<!-- PAGINA 2: MODIFICA DATO ESISTENTE          -->
+<!-- ========================================== -->
+<div id="pagina-modifica" class="pagina">
+    <h2 class="titolo-modifica">Modifica Registrazione</h2>
+    <div class="form-group">
+        <label style="color: #d35400;">Numero Progressivo da Modificare</label>
+        <input type="number" id="mod_numero" placeholder="Inserisci il numero da cercare">
     </div>
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+    
+    <div class="form-group"><label>Nuovo Nome Utente</label><input type="text" id="mod_nome"></div>
+    <div class="form-group"><label>Nuova Targa</label><input type="text" id="mod_targa"></div>
+    <div class="form-group"><label>Nuovo Peso Constatato (Kg)</label><input type="number" id="mod_peso"></div>
+    
+    <button id="btn-modifica" class="azione btn-arancione" onclick="inviaModificaRecord()">Aggiorna Record</button>
+    <div id="msg-modifica" class="messaggio-esito"></div>
+</div>
+
+<!-- ========================================== -->
+<!-- PAGINA 3: CERCA REGISTRAZIONE              -->
+<!-- ========================================== -->
+<div id="pagina-cerca" class="pagina">
+    <h2 class="titolo-cerca">Ricerca Avanzata</h2>
+    <p style="font-size: 0.9rem; color: #666; text-align: center; margin-top: -10px; margin-bottom: 20px;">
+        Puoi usare l'asterisco <b>*</b> come carattere jolly (es. *Rossi*)
+    </p>
+    
+    <div class="form-group"><label>Cerca Nome</label><input type="text" id="cerca_nome" placeholder="es. *Rossi*"></div>
+    <div class="form-group"><label>Cerca Targa</label><input type="text" id="cerca_targa" placeholder="es. TI*"></div>
+    <div class="form-group"><label>Cerca Peso</label><input type="text" id="cerca_peso" placeholder="es. 38*"></div>
+    
+    <button id="btn-cerca" class="azione btn-blu" onclick="inviaRicerca()">Cerca nel Database</button>
+    <div id="msg-cerca" class="messaggio-esito"></div>
+    
+    <div id="area-tabella"></div>
 </div>
 
 <script>
-    // 1. INCOLLA QUI IL TUO URL DI GOOGLE (rimane lo stesso di prima!)
+    // === INCOLLA QUI IL TUO URL DI GOOGLE ===
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOtCvcjHg9qtLxyNXELueopUugvtAfjrT-ieAS5JFXRShfG5x9FJ4njxe2X_nRaK1vYg/exec";
 
-    // --- FUNZIONE PER CREARE ---
+    // --- NUOVA FUNZIONE: GESTIONE DELLE PAGINE ---
+    // Questa funzione accende la pagina richiesta e spegne le altre
+    function cambiaPagina(nomePagina) {
+        // 1. Togliamo la classe "attiva" a tutte le pagine
+        document.getElementById('pagina-nuovo').classList.remove('attiva');
+        document.getElementById('pagina-modifica').classList.remove('attiva');
+        document.getElementById('pagina-cerca').classList.remove('attiva');
+        
+        // 2. Togliamo l'evidenziatore a tutti i bottoni del menu
+        document.getElementById('nav-nuovo').classList.remove('attivo');
+        document.getElementById('nav-modifica').classList.remove('attivo');
+        document.getElementById('nav-cerca').classList.remove('attivo');
+        
+        // 3. Accendiamo solo la pagina richiesta e il suo bottone
+        document.getElementById('pagina-' + nomePagina).classList.add('attiva');
+        document.getElementById('nav-' + nomePagina).classList.add('attivo');
+    }
+
+    // --- FUNZIONI DI DATABASE (Invariate) ---
     async function inviaNuovoRecord() {
-        const nome = document.getElementById("nuovo_nome").value;
-        const targa = document.getElementById("nuovo_targa").value;
-        const peso = document.getElementById("nuovo_peso").value;
-        const divMsg = document.getElementById("msg-nuovo");
-        const btn = document.getElementById("btn-nuovo");
-
-        if(!nome || !targa || !peso) {
-            divMsg.style.color = "red"; divMsg.innerHTML = "Compila tutti i campi!"; return;
-        }
-
-        btn.disabled = true; btn.innerText = "Creazione in corso..."; divMsg.innerHTML = "";
-
-        // Qui aggiungiamo la "parola d'ordine": azione: "nuovo"
-        const datiDaSpedire = { azione: "nuovo", nome: nome, targa: targa, peso: peso };
-
-        eseguiChiamata(datiDaSpedire, divMsg, btn, "Crea Nuovo Record", true);
+        const d = { azione: "nuovo", nome: document.getElementById("nuovo_nome").value, targa: document.getElementById("nuovo_targa").value, peso: document.getElementById("nuovo_peso").value };
+        if(!d.nome || !d.targa || !d.peso) { document.getElementById("msg-nuovo").innerHTML = "<span style='color:red'>Compila tutti i campi!</span>"; return; }
+        eseguiChiamata(d, "msg-nuovo", "btn-nuovo", "Crea Nuovo Record");
     }
 
-    // --- FUNZIONE PER MODIFICARE ---
     async function inviaModificaRecord() {
-        const numero = document.getElementById("mod_numero").value;
-        const nome = document.getElementById("mod_nome").value;
-        const targa = document.getElementById("mod_targa").value;
-        const peso = document.getElementById("mod_peso").value;
-        const divMsg = document.getElementById("msg-modifica");
-        const btn = document.getElementById("btn-modifica");
-
-        if(!numero || !nome || !targa || !peso) {
-            divMsg.style.color = "red"; divMsg.innerHTML = "Compila il numero e i nuovi dati!"; return;
-        }
-
-        btn.disabled = true; btn.innerText = "Aggiornamento in corso..."; divMsg.innerHTML = "";
-
-        // Qui aggiungiamo la parola d'ordine "modifica" e il numero da cercare!
-        const datiDaSpedire = { 
-            azione: "modifica", 
-            numeroDaModificare: numero, 
-            nome: nome, 
-            targa: targa, 
-            peso: peso 
-        };
-
-        eseguiChiamata(datiDaSpedire, divMsg, btn, "Aggiorna Record", false);
+        const d = { azione: "modifica", numeroDaModificare: document.getElementById("mod_numero").value, nome: document.getElementById("mod_nome").value, targa: document.getElementById("mod_targa").value, peso: document.getElementById("mod_peso").value };
+        if(!d.numeroDaModificare || !d.nome || !d.targa || !d.peso) { document.getElementById("msg-modifica").innerHTML = "<span style='color:red'>Compila numero e nuovi dati!</span>"; return; }
+        eseguiChiamata(d, "msg-modifica", "btn-modifica", "Aggiorna Record");
     }
 
-    // --- FUNZIONE CENTRALE DI COMUNICAZIONE (Usata da entrambi i bottoni) ---
-    async function eseguiChiamata(dati, divMsg, btn, testoBtnOriginale, pulisciCampiNuovo) {
-        try {
-            const risposta = await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-                body: JSON.stringify(dati),
-                redirect: "follow" 
-            });
+    async function inviaRicerca() {
+        const d = { azione: "cerca", cercaNome: document.getElementById("cerca_nome").value, cercaTarga: document.getElementById("cerca_targa").value, cercaPeso: document.getElementById("cerca_peso").value };
+        const divMsg = document.getElementById("msg-cerca");
+        const btn = document.getElementById("btn-cerca");
+        const areaTabella = document.getElementById("area-tabella");
 
+        btn.disabled = true; btn.innerText = "Ricerca in corso..."; divMsg.innerHTML = ""; areaTabella.innerHTML = "";
+
+        try {
+            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(d), redirect: "follow" });
             const risultato = await risposta.json();
 
-            if(risultato.successo) {
-                divMsg.style.color = "#27ae60";
-                divMsg.innerHTML = `${risultato.messaggio} <span class="numero-gigante" style="color:#d35400;">${risultato.numeroAssegnato}</span>`;
-                
-                // Se è un nuovo record, puliamo la scheda "Nuovo"
-                if (pulisciCampiNuovo) {
-                    document.getElementById("nuovo_nome").value = "";
-                    document.getElementById("nuovo_targa").value = "";
-                    document.getElementById("nuovo_peso").value = "";
+            if (risultato.successo) {
+                var arrayRisultati = risultato.risultati;
+                if (arrayRisultati.length === 0) {
+                    divMsg.innerHTML = "<span style='color:#f39c12'>Nessun risultato trovato.</span>";
                 } else {
-                    // Se è una modifica, puliamo la scheda "Modifica"
-                    document.getElementById("mod_numero").value = "";
-                    document.getElementById("mod_nome").value = "";
-                    document.getElementById("mod_targa").value = "";
-                    document.getElementById("mod_peso").value = "";
+                    divMsg.innerHTML = `<span style='color:#2980b9'>Trovati ${arrayRisultati.length} record.</span>`;
+                    let tabellaHTML = `<table><tr><th>N°</th><th>Nome</th><th>Targa</th><th>Peso</th></tr>`;
+                    for (var i = 0; i < arrayRisultati.length; i++) {
+                        tabellaHTML += `<tr><td><b>${arrayRisultati[i].numero}</b></td><td>${arrayRisultati[i].nome}</td><td>${arrayRisultati[i].targa}</td><td>${arrayRisultati[i].peso} Kg</td></tr>`;
+                    }
+                    tabellaHTML += `</table>`;
+                    areaTabella.innerHTML = tabellaHTML;
                 }
             } else {
-                divMsg.style.color = "red";
-                divMsg.innerHTML = risultato.messaggio; // Mostriamo l'errore se il numero non esiste
+                divMsg.innerHTML = "<span style='color:red'>" + risultato.messaggio + "</span>";
             }
-        } catch (errore) {
-            divMsg.style.color = "red";
-            divMsg.innerHTML = "Errore di rete. Impossibile raggiungere il database.";
-        }
+        } catch (errore) { divMsg.innerHTML = "<span style='color:red'>Errore di rete.</span>"; }
+        btn.disabled = false; btn.innerText = "Cerca nel Database";
+    }
 
-        btn.disabled = false;
-        btn.innerText = testoBtnOriginale;
+    async function eseguiChiamata(dati, idMsg, idBtn, testoOriginaleBtn) {
+        const divMsg = document.getElementById(idMsg);
+        const btn = document.getElementById(idBtn);
+        btn.disabled = true; btn.innerText = "Attendere..."; divMsg.innerHTML = "";
+        try {
+            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(dati), redirect: "follow" });
+            const risultato = await risposta.json();
+            if(risultato.successo) {
+                divMsg.innerHTML = `<span style='color:#27ae60'>${risultato.messaggio}</span> <span class="numero-gigante" style="color:#d35400;">${risultato.numeroAssegnato}</span>`;
+            } else { divMsg.innerHTML = `<span style='color:red'>${risultato.messaggio}</span>`; }
+        } catch (errore) { divMsg.innerHTML = "<span style='color:red'>Errore di rete.</span>"; }
+        btn.disabled = false; btn.innerText = testoOriginaleBtn;
     }
 </script>
 
