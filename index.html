@@ -42,33 +42,22 @@
         .btn-freccia:disabled { background: #95a5a6; color: #ecf0f1; cursor: not-allowed; }
         
         input[readonly], textarea[readonly] { background-color: #f4f6f7; color: #333; }
+        .obbligatorio { color: #d32f2f; font-weight: bold; margin-left: 2px; }
 
         /* --- STILI PER LA STAMPA PDF --- */
         @media print {
             @page { size: A4; margin: 0; } 
-            
             body * { visibility: hidden; } 
             #modulo-stampa, #modulo-stampa * { visibility: visible; }
-            
-            #modulo-stampa { 
-                position: absolute; left: 0; top: 0; width: 100%; 
-                padding: 2cm; 
-                box-sizing: border-box; 
-                font-family: 'Segoe UI', Arial, sans-serif; 
-                color: #333;
-            }
-            
+            #modulo-stampa { position: absolute; left: 0; top: 0; width: 100%; padding: 2cm; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; color: #333;}
             .stampa-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f4e79; padding-bottom: 10px; margin-bottom: 30px; color: #1f4e79; }
             .stampa-titolo { text-align: center; font-size: 1.6rem; font-weight: bold; margin-bottom: 30px; color: #1f4e79; }
-            
             .stampa-riga { display: flex; border: 1px solid #1f4e79; margin-bottom: -1px; }
             .stampa-etichetta { width: 40%; padding: 8px; font-weight: bold; border-right: 1px solid #1f4e79; background-color: #e3f2fd !important; color: #1f4e79; -webkit-print-color-adjust: exact; }
             .stampa-valore { width: 60%; padding: 8px; font-size: 1.05rem;}
-            
             .stampa-osservazioni-container { border: 1px solid #1f4e79; margin-top: 15px; min-height: 100px; display: flex; flex-direction: column; }
             .stampa-osservazioni-label { width: 100%; padding: 8px; font-weight: bold; background-color: #e3f2fd !important; color: #1f4e79; border-bottom: 1px solid #1f4e79; box-sizing: border-box; -webkit-print-color-adjust: exact; }
             .stampa-osservazioni-valore { padding: 10px; flex-grow: 1; font-size: 1.05rem;}
-
             .stampa-firme { display: flex; justify-content: space-between; margin-top: 50px; }
             .box-firma { width: 30%; border: 1px solid #1f4e79; text-align: center; padding-top: 10px; }
             .box-quadrato { width: 80px; height: 80px; border: 1px solid #1f4e79; margin: 10px auto; }
@@ -101,28 +90,62 @@
     
     <div class="grid-row">
         <div class="grid-item"><label>Scheda</label><input type="text" id="n_scheda"></div>
-        <div class="grid-item" style="flex: 2;"><label>Genere veicolo</label>
+        <div class="grid-item" style="flex: 2;"><label>Genere veicolo <span class="obbligatorio">*</span></label>
             <select id="n_genere">
                 <option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option>
             </select>
         </div>
-        <div class="grid-item"><label>Nazionalità Veicolo</label>
+        <div class="grid-item"><label>Nazionalità Veicolo <span class="obbligatorio">*</span></label>
             <select id="n_nazione">
-                <option value="">-- Seleziona --</option><option value="CHE">CHE - Svizzera</option><option value="ITA">ITA - Italia</option><option value="DEU">DEU - Germania</option><option value="FRA">FRA - Francia</option><option value="AUT">AUT - Austria</option><option value="LIE">LIE - Liechtenstein</option><option value="POL">POL - Polonia</option><option value="ROU">ROU - Romania</option><option value="BGR">BGR - Bulgaria</option><option value="ESP">ESP - Spagna</option><option value="PRT">PRT - Portogallo</option><option value="NLD">NLD - Paesi Bassi</option><option value="BEL">BEL - Belgio</option><option value="CZE">CZE - Rep. Ceca</option><option value="SVK">SVK - Slovacchia</option><option value="HUN">HUN - Ungheria</option><option value="SVN">SVN - Slovenia</option><option value="HRV">HRV - Croazia</option><option value="SRB">SRB - Serbia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="GBR">GBR - Regno Unito</option><option value="ALTRO">ALTRO...</option>
+                <option value="">-- Seleziona --</option>
+                <option value="ALB">ALB - Albania</option>
+                <option value="AUT">AUT - Austria</option>
+                <option value="BEL">BEL - Belgio</option>
+                <option value="BLR">BLR - Bielorussia</option>
+                <option value="BIH">BIH - Bosnia ed E.</option>
+                <option value="BGR">BGR - Bulgaria</option>
+                <option value="HRV">HRV - Croazia</option>
+                <option value="EST">EST - Estonia</option>
+                <option value="FRA">FRA - Francia</option>
+                <option value="DEU">DEU - Germania</option>
+                <option value="GBR">GBR - Regno Unito</option>
+                <option value="GRC">GRC - Grecia</option>
+                <option value="ITA">ITA - Italia</option>
+                <option value="XKX">XKX - Kosovo</option>
+                <option value="LVA">LVA - Lettonia</option>
+                <option value="LIE">LIE - Liechtenstein</option>
+                <option value="LTU">LTU - Lituania</option>
+                <option value="MKD">MKD - Macedonia del Nord</option>
+                <option value="MDA">MDA - Moldavia</option>
+                <option value="MNE">MNE - Montenegro</option>
+                <option value="NLD">NLD - Paesi Bassi</option>
+                <option value="POL">POL - Polonia</option>
+                <option value="PRT">PRT - Portogallo</option>
+                <option value="CZE">CZE - Rep. Ceca</option>
+                <option value="ROU">ROU - Romania</option>
+                <option value="RUS">RUS - Russia</option>
+                <option value="SRB">SRB - Serbia</option>
+                <option value="SVK">SVK - Slovacchia</option>
+                <option value="SVN">SVN - Slovenia</option>
+                <option value="ESP">ESP - Spagna</option>
+                <option value="CHE">CHE - Svizzera</option>
+                <option value="UKR">UKR - Ucraina</option>
+                <option value="HUN">HUN - Ungheria</option>
+                <option value="ALTRO">ALTRO...</option>
             </select>
         </div>
     </div>
     
     <div class="grid-row">
-        <div class="grid-item"><label>Targa Motrice</label><input type="text" id="n_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
+        <div class="grid-item"><label>Targa Motrice <span class="obbligatorio">*</span></label><input type="text" id="n_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
         <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="n_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento</label>
+        <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento <span class="obbligatorio">*</span></label>
             <select id="n_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Sovradimensionato">Sovradimensionato</option><option value="Veicolo in cattivo stato">Veicolo in cattivo stato</option><option value="Fase Rossa">Fase Rossa</option><option value="Veicolo vuoto">Veicolo vuoto</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Libretto di circolazione non valido o mancante">Libretto di circolazione non valido</option><option value="Licenza di guida non valida o mancante">Licenza di guida non valida</option><option value="Documento di identità non valido o mancante">Documento di identità non valido</option><option value="Altri motivi del trasportatore">Altri motivi del trasportatore</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select>
         </div>
     </div>
     
     <div class="grid-row">
-        <div class="grid-item"><label>Traffico</label><select id="n_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
+        <div class="grid-item"><label>Traffico <span class="obbligatorio">*</span></label><select id="n_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
         <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="n_tasse"></div>
         <div class="grid-item"><label>MRN</label><input type="text" id="n_mrn"></div>
         <div class="grid-item"><label>TTPCP</label><input type="text" id="n_ttpcp"></div>
@@ -133,7 +156,7 @@
         <div class="grid-item"><label>Utente</label><input type="text" id="n_utente"></div>
     </div>
     
-    <div class="osservazioni-box"><label>Osservazioni</label><textarea id="n_note"></textarea></div>
+    <div class="osservazioni-box"><label>Osservazioni <span class="obbligatorio">*</span></label><textarea id="n_note"></textarea></div>
     
     <div class="button-section">
         <button id="btn-nuovo" class="btn-main" onclick="inviaDati('nuovo')">Salva Respingimento</button>
@@ -161,7 +184,9 @@
         <div class="grid-item" style="flex: 2;"><label>Nuovo Genere</label><select id="m_genere"><option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option></select></div>
         <div class="grid-item"><label>Nazionalità Veicolo</label>
             <select id="m_nazione">
-                <option value="">-- Seleziona --</option><option value="CHE">CHE - Svizzera</option><option value="ITA">ITA - Italia</option><option value="DEU">DEU - Germania</option><option value="FRA">FRA - Francia</option><option value="AUT">AUT - Austria</option><option value="LIE">LIE - Liechtenstein</option><option value="POL">POL - Polonia</option><option value="ROU">ROU - Romania</option><option value="BGR">BGR - Bulgaria</option><option value="ESP">ESP - Spagna</option><option value="PRT">PRT - Portogallo</option><option value="NLD">NLD - Paesi Bassi</option><option value="BEL">BEL - Belgio</option><option value="CZE">CZE - Rep. Ceca</option><option value="SVK">SVK - Slovacchia</option><option value="HUN">HUN - Ungheria</option><option value="SVN">SVN - Slovenia</option><option value="HRV">HRV - Croazia</option><option value="SRB">SRB - Serbia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="GBR">GBR - Regno Unito</option><option value="ALTRO">ALTRO...</option>
+                <option value="">-- Seleziona --</option>
+                <!-- Copia delle nazioni anche in modifica -->
+                <option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
             </select>
         </div>
     </div>
@@ -195,7 +220,6 @@
     <h2 style="text-align: center; color: #1f4e79; margin-top: 0;">Ricerca Avanzata (Usa * come Jolly)</h2>
     
     <div class="grid-row" style="background: #e9ecef; padding: 10px; border: 1px solid #ccc;">
-        <!-- L'etichetta modificata per chiarire che cerca in entrambe le targhe -->
         <div class="grid-item"><label>Cerca Targa (Motrice/Rimorchio)</label><input type="text" id="c_targa" placeholder="Es. TI*" oninput="this.value = this.value.replace(/[^a-zA-Z0-9*]/g, '').toUpperCase();"></div>
         <div class="grid-item"><label>Cerca MRN</label><input type="text" id="c_mrn" placeholder="Es. *234*"></div>
         <div class="grid-item"><label>Cerca Nr. Respingimento</label><input type="text" id="c_numero" placeholder="Es. 13"></div>
@@ -307,11 +331,16 @@
 <!-- MOTORE JAVASCRIPT                          -->
 <!-- ========================================== -->
 <script>
-    // IL TUO URL GOOGLE APPS SCRIPT
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCvoiqkkn4Zl3EFkshbf7338XTfq4ivpvbLDx0eIBeEsJd6nh-crN-SuxROBt4QAUwCQ/exec";
 
+    // CARICAMENTO INIZIALE
     const oggi = new Date();
     document.getElementById("display-data").innerText = oggi.toLocaleDateString("it-IT");
+    
+    const utenteSalvato = localStorage.getItem("utenteDogana");
+    if (utenteSalvato) {
+        document.getElementById("n_utente").value = utenteSalvato;
+    }
 
     function cambiaPagina(nomePagina) {
         if (nomePagina === 'modifica') {
@@ -349,6 +378,15 @@
             genTraffico: document.getElementById(prefisso+'traffico').value
         };
 
+        if (tipo === 'nuovo') {
+            if (!datiDaSpedire.genereVeicolo || !datiDaSpedire.nazionalitaVeicolo || !datiDaSpedire.targaMotrice || !datiDaSpedire.motivoRespingimento || !datiDaSpedire.genTraffico || !datiDaSpedire.osservazioni) {
+                msg.style.color = "red";
+                msg.innerText = "Attenzione: Compila tutti i campi con l'asterisco rosso (*) !";
+                return; 
+            }
+            localStorage.setItem("utenteDogana", datiDaSpedire.utente);
+        }
+
         if (tipo === 'modifica') {
             datiDaSpedire.numeroDaModificare = document.getElementById('m_cerca_num').value;
             if (!datiDaSpedire.numeroDaModificare) { msg.style.color="red"; msg.innerText = "Inserisci il numero da modificare!"; return; }
@@ -375,19 +413,14 @@
     async function caricaPerModifica() {
         const numeroInput = document.getElementById('m_cerca_num').value;
         const msg = document.getElementById('msg-modifica');
-        
         if (!numeroInput) { msg.style.color = "red"; msg.innerText = "Inserisci un numero!"; return; }
-        
         msg.style.color = "black"; msg.innerText = "Caricamento in corso...";
-        
         try {
             const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ azione: "carica_numero", numeroDaCercare: numeroInput }), redirect: "follow" });
             const risultato = await risposta.json();
-
             if (risultato.successo) {
                 let dati = risultato.datiRecord; 
                 msg.style.color = "green"; msg.innerText = "Dati caricati! Ora puoi modificare.";
-                
                 document.getElementById('m_scheda').value = dati[1];
                 document.getElementById('m_genere').value = dati[2];
                 document.getElementById('m_targa_m').value = dati[3];
@@ -401,9 +434,7 @@
                 document.getElementById('m_traffico').value = dati[11];
                 document.getElementById('m_utente').value = dati[15];
                 document.getElementById('m_nazione').value = dati[16];
-            } else {
-                msg.style.color = "red"; msg.innerText = risultato.messaggio;
-            }
+            } else { msg.style.color = "red"; msg.innerText = risultato.messaggio; }
         } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di connessione."; }
     }
 
@@ -414,32 +445,17 @@
         const btn = document.getElementById("btn-cerca");
         const msg = document.getElementById("msg-cerca");
         const areaMaschera = document.getElementById("area-risultati-maschera");
-
-        const datiDaSpedire = {
-            azione: "cerca",
-            cercaTarga: document.getElementById("c_targa").value,
-            cercaMRN: document.getElementById("c_mrn").value,
-            cercaNumero: document.getElementById("c_numero").value 
-        };
-
-        btn.disabled = true; btn.innerText = "Ricerca in corso..."; msg.innerHTML = ""; 
-        areaMaschera.style.display = "none"; 
-
+        const datiDaSpedire = { azione: "cerca", cercaTarga: document.getElementById("c_targa").value, cercaMRN: document.getElementById("c_mrn").value, cercaNumero: document.getElementById("c_numero").value };
+        
+        btn.disabled = true; btn.innerText = "Ricerca in corso..."; msg.innerHTML = ""; areaMaschera.style.display = "none"; 
+        
         try {
             const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(datiDaSpedire), redirect: "follow" });
             const risultato = await risposta.json();
-
             if (risultato.successo) {
                 risultatiRicerca = risultato.risultati;
-                
-                if (risultatiRicerca.length === 0) {
-                    msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>";
-                } else {
-                    msg.innerHTML = `<span style='color:blue'>Trovati ${risultatiRicerca.length} record.</span>`;
-                    indiceCorrente = 0; 
-                    mostraRecord(); 
-                    areaMaschera.style.display = "block"; 
-                }
+                if (risultatiRicerca.length === 0) { msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>"; } 
+                else { msg.innerHTML = `<span style='color:blue'>Trovati ${risultatiRicerca.length} record.</span>`; indiceCorrente = 0; mostraRecord(); areaMaschera.style.display = "block"; }
             } else { msg.style.color = "red"; msg.innerText = risultato.messaggio; }
         } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di rete."; }
         btn.disabled = false; btn.innerText = "Trova Respingimenti";
@@ -447,7 +463,6 @@
 
     function mostraRecord() {
         const record = risultatiRicerca[indiceCorrente]; 
-        
         document.getElementById("v_numero").innerText = record.numero;
         document.getElementById("v_data").innerText = record.data;
         document.getElementById("v_ora").innerText = record.ora;
@@ -464,7 +479,6 @@
         document.getElementById("v_utente").value = record.utente;
         document.getElementById("v_nazione").value = record.nazione;
         document.getElementById("v_note").value = record.note;
-
         document.getElementById("testo-contatore").innerText = `Record ${indiceCorrente + 1} di ${risultatiRicerca.length}`;
         document.getElementById("btn-indietro").disabled = (indiceCorrente === 0);
         document.getElementById("btn-avanti").disabled = (indiceCorrente === risultatiRicerca.length - 1);
@@ -494,6 +508,27 @@
 
         window.print();
         document.getElementById("modulo-stampa").style.display = "none";
+
+        // --- NUOVA LOGICA: Svuota i campi della maschera "Nuovo" ---
+        if (sorgente === 'nuovo') {
+            document.getElementById('n_scheda').value = '';
+            document.getElementById('n_genere').value = '';
+            document.getElementById('n_nazione').value = '';
+            document.getElementById('n_targa_m').value = '';
+            document.getElementById('n_targa_r').value = '';
+            document.getElementById('n_motivo').value = '';
+            document.getElementById('n_traffico').value = '';
+            document.getElementById('n_tasse').value = '';
+            document.getElementById('n_mrn').value = '';
+            document.getElementById('n_ttpcp').value = '';
+            document.getElementById('n_dog').value = '';
+            document.getElementById('n_note').value = '';
+            // Non svuotiamo 'n_utente' così rimane per il prossimo inserimento
+            
+            document.getElementById('display-numero-nuovo').innerText = '...';
+            document.getElementById('msg-nuovo').innerText = '';
+            document.getElementById('btn-stampa-nuovo').style.display = 'none';
+        }
     }
 </script>
 
