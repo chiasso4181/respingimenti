@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Respingimenti Dogana Chiasso</title>
     <style>
-        /* --- STILI GENERALI (Schermo) --- */
+        /* --- STILI GENERALI (Schermo PC) --- */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        .navbar { background-color: #1f4e79; display: flex; justify-content: center; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .nav-btn { background-color: transparent; color: white; border: none; padding: 10px 20px; margin: 0 5px; font-size: 1.1rem; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .nav-btn:hover { background-color: #1a4164; }
-        .nav-btn.attivo { background-color: #f39c12; color: #fff; } 
-
         .sidebar { background-color: #1f4e79; width: 230px; display: flex; flex-direction: column; padding-top: 30px; box-shadow: 2px 0 5px rgba(0,0,0,0.2); z-index: 10; }
         .nav-btn { background-color: transparent; color: white; border: none; padding: 15px 20px; margin: 5px 10px; font-size: 1.1rem; cursor: pointer; border-radius: 4px; font-weight: bold; text-align: left; transition: 0.2s; }
         .nav-btn:hover { background-color: #1a4164; }
@@ -37,12 +32,12 @@
         .osservazioni-box label { display: block; background-color: #e0e0e0; text-align: center; font-weight: bold; padding: 5px; border-bottom: 1px solid #999; }
         .osservazioni-box textarea { width: 100%; height: 80px; border: none; padding: 10px; resize: vertical; box-sizing: border-box; font-family: inherit; }
 
-        .button-section { text-align: center; margin-top: 20px; }
-        .btn-main { background-color: #f4f4f4; border: 2px solid #333; padding: 10px 30px; font-weight: bold; font-size: 1.1rem; cursor: pointer; box-shadow: 2px 2px 0px #999; margin: 0 5px; }
+        .button-section { text-align: center; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .btn-main { background-color: #f4f4f4; border: 2px solid #333; padding: 10px 30px; font-weight: bold; font-size: 1.1rem; cursor: pointer; box-shadow: 2px 2px 0px #999; margin: 0; }
         .btn-main:hover { background-color: #e0e0e0; }
         .btn-main:disabled { background-color: #bdc3c7; color: #7f8c8d; cursor: not-allowed; border-color: #95a5a6; box-shadow: none; }
         
-        .messaggio-esito { margin-top: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
+        .messaggio-esito { text-align: center; font-weight: bold; font-size: 1.1rem; margin: 0; }
         
         .barra-navigazione { display: flex; justify-content: space-between; align-items: center; background: #2980b9; color: white; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-weight: bold;}
         .btn-freccia { background: white; color: #2980b9; border: none; padding: 5px 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; border-radius: 3px; }
@@ -51,6 +46,41 @@
         
         input[readonly], textarea[readonly] { background-color: #f4f6f7; color: #333; }
         .obbligatorio { color: #d32f2f; font-weight: bold; margin-left: 2px; }
+
+        /* --- NUOVO: STILI PER SMARTPHONE (Media Query) --- */
+        @media (max-width: 768px) {
+            /* Sblocchiamo lo scorrimento del corpo e cambiamo direzione in verticale */
+            body { flex-direction: column; overflow: auto; height: auto; }
+            
+            /* Trasformiamo la barra laterale in un menu superiore orizzontale */
+            .sidebar { 
+                width: 100%; 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                padding-top: 10px; 
+                padding-bottom: 10px; 
+                justify-content: space-around; 
+                position: sticky; /* Rimane in alto mentre scorri */
+                top: 0; 
+            }
+            /* Nascondiamo la scritta DOGANA CHIASSO grande per salvare spazio su mobile */
+            .sidebar > div { display: none; } 
+            
+            /* Rimpiccioliamo i pulsanti del menu e li mettiamo affiancati */
+            .nav-btn { flex: 1; text-align: center; padding: 10px 5px; font-size: 0.9rem; margin: 2px; }
+            
+            /* Rimuoviamo il blocco dello scorrimento dall'area destra (che ora è sotto) */
+            .main-content { padding: 10px; overflow-y: visible; }
+            
+            /* Le caselle non saranno più affiancate, ma andranno una sotto l'altra */
+            .grid-row { flex-direction: column; gap: 8px; }
+            
+            /* Adattiamo l'intestazione e i bottoni */
+            .header-section { flex-direction: column; align-items: center; gap: 10px; }
+            .titolo-box { width: 100%; }
+            .button-section { flex-direction: column; width: 100%; }
+            .btn-main { width: 100%; }
+        }
 
         /* --- STILI PER LA STAMPA PDF --- */
         @media print {
@@ -76,7 +106,7 @@
 </head>
 <body>
 
-<!-- NAVIGAZIONE LATERALE -->
+<!-- MENU LATERALE -->
 <div class="sidebar">
     <div style="color: white; text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 30px; border-bottom: 1px solid #1a4164; padding-bottom: 15px;">
         DOGANA<br>CHIASSO
@@ -201,6 +231,7 @@
         <div style="background: #e9ecef; padding: 10px; border: 1px solid #ccc; margin-bottom: 20px;">
             <div class="grid-row" style="margin-bottom: 0;">
                 <div class="grid-item">
+                    <!-- Tooltip ripristinato con l'attributo "title" -->
                     <label title="Usa l'asterisco * come Jolly per ricerche parziali (es. TI* per tutte le targhe Ticinesi)">Cerca Targa (Motrice/Rimorchio)</label>
                     <input type="text" id="c_targa" title="Usa l'asterisco * come Jolly per ricerche parziali (es. TI* per tutte le targhe Ticinesi)" placeholder="Es. TI*" oninput="this.value = this.value.replace(/[^a-zA-Z0-9*]/g, '').toUpperCase();">
                 </div>
@@ -209,10 +240,9 @@
             </div>
         </div>
 
-        <!-- Sezione pulsante allineata orizzontalmente usando flexbox -->
-        <div class="button-section" style="margin-top: 0; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;">
-            <button id="btn-cerca" class="btn-main" onclick="avviaRicerca()" style="background: #2980b9; color: white; margin: 0;">Trova Respingimenti</button>
-            <div id="msg-cerca" class="messaggio-esito" style="margin-top: 0;"></div>
+        <div class="button-section" style="margin-top: 0; margin-bottom: 20px;">
+            <button id="btn-cerca" class="btn-main" onclick="avviaRicerca()" style="background: #2980b9; color: white;">Trova Respingimenti</button>
+            <div id="msg-cerca" class="messaggio-esito"></div>
         </div>
         
         <div id="area-risultati-maschera" style="display: none; border-top: 2px dashed #999; padding-top: 20px;">
@@ -447,7 +477,7 @@
                     msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>"; 
                 } 
                 else { 
-                    // Messaggio ridondante rimosso: lasciamo che sia il blocco di navigazione a mostrare i record!
+                    // Messaggio del totale ridondante rimosso, lasciamo la gestione alla barra di navigazione
                     msg.innerHTML = ""; 
                     indiceCorrente = 0; 
                     mostraRecord(); 
