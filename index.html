@@ -3,520 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionale Respingimenti Dogana</title>
+    <title>GUI Database Dogana - Multi Pagina</title>
     <style>
-        /* --- STILI GENERALI (Schermo) --- */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 0; margin: 0; }
         
-        .navbar { background-color: #1f4e79; display: flex; justify-content: center; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .nav-btn { background-color: transparent; color: white; border: none; padding: 10px 20px; margin: 0 5px; font-size: 1.1rem; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .nav-btn:hover { background-color: #1a4164; }
-        .nav-btn.attivo { background-color: #f39c12; color: #fff; } 
-
-        .pagina { display: none; margin: 0 auto; width: 100%; max-width: 900px; background-color: #f8f9fa; border: 2px solid #ccc; padding: 20px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); box-sizing: border-box;}
-        .pagina.attiva { display: block; }
-
-        .header-section { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .titolo-box { border: 2px solid #333; padding: 10px; background-color: #fff; text-align: center; width: 60%; }
-        .titolo-box h1 { margin: 0; font-size: 1.5rem; color: #000; border-bottom: 2px solid #333; padding-bottom: 5px; }
-        .numero-giallo { background-color: #ffff99; height: 40px; font-size: 1.8rem; font-weight: bold; color: #d32f2f; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
-        
-        .grid-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .grid-item { display: flex; flex-direction: column; flex: 1; border: 1px solid #999; background: #fff; }
-        .grid-item label { background-color: #e0e0e0; text-align: center; font-weight: bold; font-size: 0.85rem; padding: 4px; border-bottom: 1px solid #999; }
-        .grid-item input, .grid-item select { border: none; padding: 8px; font-size: 0.95rem; outline: none; width: 100%; box-sizing: border-box; }
-        
-        .osservazioni-box { border: 1px solid #999; background: #fff; margin-bottom: 20px; }
-        .osservazioni-box label { display: block; background-color: #e0e0e0; text-align: center; font-weight: bold; padding: 5px; border-bottom: 1px solid #999; }
-        .osservazioni-box textarea { width: 100%; height: 80px; border: none; padding: 10px; resize: vertical; box-sizing: border-box; font-family: inherit; }
-
-        .button-section { text-align: center; margin-top: 20px; }
-        .btn-main { background-color: #f4f4f4; border: 2px solid #333; padding: 10px 30px; font-weight: bold; font-size: 1.1rem; cursor: pointer; box-shadow: 2px 2px 0px #999; margin: 0 5px; }
-        .btn-main:hover { background-color: #e0e0e0; }
-        
-        .messaggio-esito { margin-top: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
-        
-        .barra-navigazione { display: flex; justify-content: space-between; align-items: center; background: #2980b9; color: white; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-weight: bold;}
-        .btn-freccia { background: white; color: #2980b9; border: none; padding: 5px 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; border-radius: 3px; }
-        .btn-freccia:hover { background: #e0e0e0; }
-        .btn-freccia:disabled { background: #95a5a6; color: #ecf0f1; cursor: not-allowed; }
-        
-        input[readonly], textarea[readonly] { background-color: #f4f6f7; color: #333; }
-        .obbligatorio { color: #d32f2f; font-weight: bold; margin-left: 2px; }
-
-        /* --- STILI PER LA STAMPA PDF --- */
-        @media print {
-            @page { size: A4; margin: 0; } 
-            body * { visibility: hidden; } 
-            #modulo-stampa, #modulo-stampa * { visibility: visible; }
-            #modulo-stampa { position: absolute; left: 0; top: 0; width: 100%; padding: 2cm; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; color: #333;}
-            .stampa-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f4e79; padding-bottom: 10px; margin-bottom: 30px; color: #1f4e79; }
-            .stampa-titolo { text-align: center; font-size: 1.6rem; font-weight: bold; margin-bottom: 30px; color: #1f4e79; }
-            .stampa-riga { display: flex; border: 1px solid #1f4e79; margin-bottom: -1px; }
-            .stampa-etichetta { width: 40%; padding: 8px; font-weight: bold; border-right: 1px solid #1f4e79; background-color: #e3f2fd !important; color: #1f4e79; -webkit-print-color-adjust: exact; }
-            .stampa-valore { width: 60%; padding: 8px; font-size: 1.05rem;}
-            .stampa-osservazioni-container { border: 1px solid #1f4e79; margin-top: 15px; min-height: 100px; display: flex; flex-direction: column; }
-            .stampa-osservazioni-label { width: 100%; padding: 8px; font-weight: bold; background-color: #e3f2fd !important; color: #1f4e79; border-bottom: 1px solid #1f4e79; box-sizing: border-box; -webkit-print-color-adjust: exact; }
-            .stampa-osservazioni-valore { padding: 10px; flex-grow: 1; font-size: 1.05rem;}
-            .stampa-firme { display: flex; justify-content: space-between; margin-top: 50px; }
-            .box-firma { width: 30%; border: 1px solid #1f4e79; text-align: center; padding-top: 10px; }
-            .box-quadrato { width: 80px; height: 80px; border: 1px solid #1f4e79; margin: 10px auto; }
-            .box-linea { border-top: 1px solid #1f4e79; margin: 30px 10px 10px 10px; padding-top: 5px; font-size: 0.8rem; color: #1f4e79; font-weight: bold; }
+        /* --- NUOVO MENU DI NAVIGAZIONE --- */
+        .navbar {
+            background-color: #1f4e79;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
+        .nav-btn {
+            background-color: transparent;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .nav-btn:hover { background-color: #1a4164; }
+        .nav-btn.attivo { background-color: #f39c12; color: #fff; } /* Evidenzia la pagina corrente */
+
+        /* --- STILI DELLE PAGINE --- */
+        .pagina {
+            display: none; /* Di base, tutte le pagine sono nascoste */
+            max-width: 600px; /* Abbiamo allargato la pagina per fare spazio a futuri campi! */
+            margin: 0 auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .pagina.attiva {
+            display: block; /* Solo la pagina con questa classe sarà visibile */
+        }
+
+        h2 { text-align: center; margin-top: 0; font-size: 1.6rem; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;}
+        .titolo-nuovo { color: #27ae60; border-bottom-color: #27ae60;}
+        .titolo-modifica { color: #f39c12; border-bottom-color: #f39c12;}
+        .titolo-cerca { color: #2980b9; border-bottom-color: #2980b9;}
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 1rem;}
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem;}
+        
+        button.azione { width: 100%; padding: 12px; color: white; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; font-weight: bold;}
+        .btn-verde { background-color: #27ae60; } .btn-verde:hover { background-color: #1e8449; }
+        .btn-arancione { background-color: #f39c12; } .btn-arancione:hover { background-color: #d68910; }
+        .btn-blu { background-color: #2980b9; } .btn-blu:hover { background-color: #1a5276; }
+        
+        .messaggio-esito { margin-top: 20px; text-align: center; font-size: 1.1rem; min-height: 20px; }
+        .numero-gigante { display: block; font-size: 2.5rem; font-weight: bold; margin-top: 10px; }
+
+        /* Stili per la tabella di ricerca */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #2980b9; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
 
-<!-- NAVIGAZIONE -->
+<!-- MENU DI NAVIGAZIONE -->
 <div class="navbar">
-    <button class="nav-btn attivo" id="nav-nuovo" onclick="cambiaPagina('nuovo')">Nuovo Respingimento</button>
-    <button class="nav-btn" id="nav-modifica" onclick="cambiaPagina('modifica')">Modifica Dati</button>
-    <button class="nav-btn" id="nav-cerca" onclick="cambiaPagina('cerca')">Ricerca Avanzata</button>
+    <button class="nav-btn attivo" id="nav-nuovo" onclick="cambiaPagina('nuovo')">Nuova Registrazione</button>
+    <button class="nav-btn" id="nav-modifica" onclick="cambiaPagina('modifica')">Modifica Registrazione</button>
+    <button class="nav-btn" id="nav-cerca" onclick="cambiaPagina('cerca')">Cerca nel Database</button>
 </div>
 
 <!-- ========================================== -->
-<!-- PAGINA 1: NUOVO                            -->
+<!-- PAGINA 1: INSERIMENTO NUOVO DATO           -->
 <!-- ========================================== -->
 <div id="pagina-nuovo" class="pagina attiva">
-    <div class="header-section">
-        <div class="titolo-box">
-            <h1>NUOVO Respingimento Nr.</h1>
-            <div id="display-numero-nuovo" class="numero-giallo">...</div>
-        </div>
-        <div style="text-align: right; font-weight: bold; padding: 10px;">
-            Data: <span id="display-data"></span>
-        </div>
-    </div>
+    <h2 class="titolo-nuovo">Nuova Registrazione</h2>
+    <div class="form-group"><label>Nome Utente</label><input type="text" id="nuovo_nome"></div>
+    <div class="form-group"><label>Targa</label><input type="text" id="nuovo_targa"></div>
+    <div class="form-group"><label>Peso Constatato (Kg)</label><input type="number" id="nuovo_peso"></div>
+    <!-- Qui potrai aggiungere altri form-group in futuro! -->
     
-    <div class="grid-row">
-        <div class="grid-item"><label>Scheda</label><input type="text" id="n_scheda"></div>
-        <div class="grid-item" style="flex: 2;"><label>Genere veicolo <span class="obbligatorio">*</span></label>
-            <select id="n_genere">
-                <option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option>
-            </select>
-        </div>
-        <div class="grid-item"><label>Nazionalità Veicolo <span class="obbligatorio">*</span></label>
-            <select id="n_nazione">
-                <option value="">-- Seleziona --</option>
-                <option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
-            </select>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Targa Motrice <span class="obbligatorio">*</span></label><input type="text" id="n_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="n_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento <span class="obbligatorio">*</span></label>
-            <select id="n_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Sovradimensionato">Sovradimensionato</option><option value="Veicolo in cattivo stato">Veicolo in cattivo stato</option><option value="Fase Rossa">Fase Rossa</option><option value="Veicolo vuoto">Veicolo vuoto</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Libretto di circolazione non valido o mancante">Libretto di circolazione non valido</option><option value="Licenza di guida non valida o mancante">Licenza di guida non valida</option><option value="Documento di identità non valido o mancante">Documento di identità non valido</option><option value="Altri motivi del trasportatore">Altri motivi del trasportatore</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Traffico <span class="obbligatorio">*</span></label><select id="n_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
-        <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="n_tasse"></div>
-        <div class="grid-item"><label>MRN</label><input type="text" id="n_mrn"></div>
-        <div class="grid-item"><label>TTPCP</label><input type="text" id="n_ttpcp"></div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Dog. IT</label><input type="text" id="n_dog"></div>
-        <div class="grid-item"><label>Utente</label><input type="text" id="n_utente"></div>
-    </div>
-    
-    <div class="osservazioni-box"><label>Osservazioni <span class="obbligatorio">*</span></label><textarea id="n_note"></textarea></div>
-    
-    <div class="button-section">
-        <button id="btn-nuovo" class="btn-main" onclick="inviaDati('nuovo')">Salva Respingimento</button>
-        <button id="btn-stampa-nuovo" class="btn-main" style="background-color: #3498db; color: white; display: none;" onclick="generaPDF('nuovo')">🖨️ Stampa Modulo PDF</button>
-        <div id="msg-nuovo" class="messaggio-esito"></div>
-    </div>
+    <button id="btn-nuovo" class="azione btn-verde" onclick="inviaNuovoRecord()">Crea Nuovo Record</button>
+    <div id="msg-nuovo" class="messaggio-esito"></div>
 </div>
 
 <!-- ========================================== -->
-<!-- PAGINA 2: MODIFICA                         -->
+<!-- PAGINA 2: MODIFICA DATO ESISTENTE          -->
 <!-- ========================================== -->
 <div id="pagina-modifica" class="pagina">
-    <div class="header-section">
-        <div class="titolo-box" style="border-color: #f39c12; width: 100%;">
-            <h1 style="color: #f39c12; border-color: #f39c12;">MODIFICA Respingimento Nr.</h1>
-            <div style="display: flex; gap: 10px; width: 95%; margin: 0 auto; margin-top: 10px;">
-                <input type="number" id="m_cerca_num" placeholder="Digita il numero qui..." class="numero-giallo" style="flex: 3; border: 1px solid #ccc; text-align: center; margin-top: 0;">
-                <button onclick="caricaPerModifica()" style="flex: 1; background: #f39c12; color: white; border: 2px solid #333; font-weight: bold; cursor: pointer; font-size: 1.1rem;">Carica Dati</button>
-            </div>
-        </div>
+    <h2 class="titolo-modifica">Modifica Registrazione</h2>
+    <div class="form-group">
+        <label style="color: #d35400;">Numero Progressivo da Modificare</label>
+        <input type="number" id="mod_numero" placeholder="Inserisci il numero da cercare">
     </div>
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
     
-    <div class="grid-row">
-        <div class="grid-item"><label>Nuova Scheda</label><input type="text" id="m_scheda"></div>
-        <div class="grid-item" style="flex: 2;"><label>Nuovo Genere</label><select id="m_genere"><option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option></select></div>
-        <div class="grid-item"><label>Nazionalità Veicolo</label>
-            <select id="m_nazione">
-                <option value="">-- Seleziona --</option><option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
-            </select>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Nuova Targa M.</label><input type="text" id="m_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Nuova Targa R.</label><input type="text" id="m_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item" style="flex: 2;"><label>Nuovo Motivo</label><select id="m_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Fase Rossa">Fase Rossa</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select></div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Traffico</label><select id="m_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
-        <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="m_tasse"></div>
-        <div class="grid-item"><label>MRN</label><input type="text" id="m_mrn"></div>
-        <div class="grid-item"><label>TTPCP</label><input type="text" id="m_ttpcp"></div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Dog. IT</label><input type="text" id="m_dog"></div>
-        <div class="grid-item"><label>Utente</label><input type="text" id="m_utente"></div>
-    </div>
-    <div class="osservazioni-box"><label>Nuove Osservazioni</label><textarea id="m_note"></textarea></div>
+    <div class="form-group"><label>Nuovo Nome Utente</label><input type="text" id="mod_nome"></div>
+    <div class="form-group"><label>Nuova Targa</label><input type="text" id="mod_targa"></div>
+    <div class="form-group"><label>Nuovo Peso Constatato (Kg)</label><input type="number" id="mod_peso"></div>
     
-    <div class="button-section">
-        <button id="btn-modifica" class="btn-main" onclick="inviaDati('modifica')">Aggiorna Record</button>
-        <div id="msg-modifica" class="messaggio-esito"></div>
-    </div>
+    <button id="btn-modifica" class="azione btn-arancione" onclick="inviaModificaRecord()">Aggiorna Record</button>
+    <div id="msg-modifica" class="messaggio-esito"></div>
 </div>
 
 <!-- ========================================== -->
-<!-- PAGINA 3: CERCA E STAMPA / ESPORTA         -->
+<!-- PAGINA 3: CERCA REGISTRAZIONE              -->
 <!-- ========================================== -->
 <div id="pagina-cerca" class="pagina">
-    <h2 style="text-align: center; color: #1f4e79; margin-top: 0;">Ricerca Avanzata (Usa * come Jolly)</h2>
+    <h2 class="titolo-cerca">Ricerca Avanzata</h2>
+    <p style="font-size: 0.9rem; color: #666; text-align: center; margin-top: -10px; margin-bottom: 20px;">
+        Puoi usare l'asterisco <b>*</b> come carattere jolly (es. *Rossi*)
+    </p>
     
-    <div class="grid-row" style="background: #e9ecef; padding: 10px; border: 1px solid #ccc;">
-        <div class="grid-item"><label>Cerca Targa (Motrice/Rimorchio)</label><input type="text" id="c_targa" placeholder="Es. TI*" oninput="this.value = this.value.replace(/[^a-zA-Z0-9*]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Cerca MRN</label><input type="text" id="c_mrn" placeholder="Es. *234*"></div>
-        <div class="grid-item"><label>Cerca Nr. Respingimento</label><input type="text" id="c_numero" placeholder="Es. 13"></div>
-    </div>
-
-    <div class="button-section" style="margin-top: 0; margin-bottom: 20px;">
-        <button id="btn-cerca" class="btn-main" onclick="avviaRicerca()" style="background: #2980b9; color: white;">Trova Respingimenti</button>
-        <div id="msg-cerca" class="messaggio-esito"></div>
-    </div>
+    <div class="form-group"><label>Cerca Nome</label><input type="text" id="cerca_nome" placeholder="es. *Rossi*"></div>
+    <div class="form-group"><label>Cerca Targa</label><input type="text" id="cerca_targa" placeholder="es. TI*"></div>
+    <div class="form-group"><label>Cerca Peso</label><input type="text" id="cerca_peso" placeholder="es. 38*"></div>
     
-    <div id="area-risultati-maschera" style="display: none; border-top: 2px dashed #999; padding-top: 20px;">
-        
-        <div class="barra-navigazione">
-            <button class="btn-freccia" id="btn-indietro" onclick="vaiIndietro()">◄ Prec.</button>
-            <span id="testo-contatore">Record 1 di X</span>
-            <button class="btn-freccia" id="btn-avanti" onclick="vaiAvanti()">Succ. ►</button>
-        </div>
-
-        <div class="header-section">
-            <div class="titolo-box" style="border-color: #2980b9;">
-                <h1 style="color: #2980b9; border-color: #2980b9;">RISULTATO Respingimento Nr.</h1>
-                <div id="v_numero" class="numero-giallo">...</div>
-            </div>
-            <div style="text-align: right; font-weight: bold; font-size: 0.9rem; color: #555;">
-                Registrato il: <span id="v_data"></span> alle <span id="v_ora"></span>
-            </div>
-        </div>
-
-        <div class="grid-row">
-            <div class="grid-item"><label>Scheda</label><input type="text" id="v_scheda" readonly></div>
-            <div class="grid-item" style="flex: 2;"><label>Genere veicolo</label><input type="text" id="v_genere" readonly></div>
-            <div class="grid-item"><label>Nazionalità Veicolo</label><input type="text" id="v_nazione" readonly></div>
-        </div>
-        <div class="grid-row">
-            <div class="grid-item"><label>Targa Motrice</label><input type="text" id="v_targa_m" readonly></div>
-            <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="v_targa_r" readonly></div>
-            <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento</label><input type="text" id="v_motivo" readonly></div>
-        </div>
-        <div class="grid-row">
-            <div class="grid-item"><label>Traffico</label><input type="text" id="v_traffico" readonly></div>
-            <div class="grid-item"><label>Tasse (Fr)</label><input type="text" id="v_tasse" readonly></div>
-            <div class="grid-item"><label>MRN</label><input type="text" id="v_mrn" readonly></div>
-            <div class="grid-item"><label>TTPCP</label><input type="text" id="v_ttpcp" readonly></div>
-        </div>
-        <div class="grid-row">
-            <div class="grid-item"><label>Dog. IT</label><input type="text" id="v_dog" readonly></div>
-            <div class="grid-item"><label>Utente</label><input type="text" id="v_utente" readonly></div>
-        </div>
-        <div class="osservazioni-box"><label>Osservazioni</label><textarea id="v_note" readonly></textarea></div>
-        
-        <div class="button-section">
-            <button class="btn-main" style="background-color: #3498db; color: white;" onclick="generaPDF('ricerca')">🖨️ Stampa Modulo PDF</button>
-            <!-- NUOVO PULSANTE ESPORTA CSV -->
-            <button class="btn-main" style="background-color: #27ae60; color: white;" onclick="esportaCSV()">📥 Esporta CSV</button>
-        </div>
-    </div>
+    <button id="btn-cerca" class="azione btn-blu" onclick="inviaRicerca()">Cerca nel Database</button>
+    <div id="msg-cerca" class="messaggio-esito"></div>
+    
+    <div id="area-tabella"></div>
 </div>
 
-<!-- ========================================== -->
-<!-- MASCHERA DI STAMPA NASCOSTA (Per il PDF)   -->
-<!-- ========================================== -->
-<div id="modulo-stampa" style="display: none;">
-    <!-- ... (Tutto il modulo di stampa rimane identico per la corretta generazione A4) ... -->
-    <div class="stampa-header">
-        <div><strong>Ispettorato Doganale<br>Chiasso-Strada</strong></div>
-        <div><strong>DOGANA<br>PONTE CHIASSO</strong></div>
-    </div>
-    
-    <div class="stampa-titolo">
-        Modulo di respingimento Nr. <span id="p_numero">______</span><br>
-        <span style="font-size: 1rem; font-weight: normal; color: #555;">del <span id="p_data"></span> ore <span id="p_ora"></span></span>
-    </div>
-
-    <div class="stampa-riga"><div class="stampa-etichetta">No Scheda di circolazione:</div><div class="stampa-valore" id="p_scheda"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Genere del veicolo:</div><div class="stampa-valore" id="p_genere"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Nazionalità veicolo:</div><div class="stampa-valore" id="p_nazione"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Targa motrice:</div><div class="stampa-valore" id="p_targa_m"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Targa rimorchio:</div><div class="stampa-valore" id="p_targa_r"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Motivo del respingimento:</div><div class="stampa-valore" id="p_motivo"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">MRN:</div><div class="stampa-valore" id="p_mrn"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Giustificativo TTPCP:</div><div class="stampa-valore" id="p_ttpcp"></div></div>
-    <div class="stampa-riga"><div class="stampa-etichetta">Contatto autorità IT:</div><div class="stampa-valore" id="p_dog"></div></div>
-    
-    <div class="stampa-osservazioni-container">
-        <div class="stampa-osservazioni-label">Osservazioni:</div>
-        <div class="stampa-osservazioni-valore" id="p_note"></div>
-    </div>
-
-    <div class="stampa-firme">
-        <div class="box-firma"><div style="font-size: 0.8rem;">Si dispone il respingimento in Italia</div><div class="box-quadrato"></div><div>Ispettorato doganale Chiasso</div><div class="box-linea">Firma</div></div>
-        <div class="box-firma"><div style="font-size: 0.8rem;">Si autorizza il rientro negli spazi doganali italiani</div><div class="box-quadrato"></div><div>Dogana Ponte Chiasso</div><div class="box-linea">Firma</div></div>
-        <div class="box-firma"><div style="font-size: 0.8rem;">Si certifica il rientro nel territorio nazionale</div><div class="box-quadrato"></div><div>Guardia di Finanza</div><div class="box-linea">Firma</div></div>
-    </div>
-</div>
-
-<!-- ========================================== -->
-<!-- MOTORE JAVASCRIPT                          -->
-<!-- ========================================== -->
 <script>
-    // IL TUO URL GOOGLE APPS SCRIPT
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCvoiqkkn4Zl3EFkshbf7338XTfq4ivpvbLDx0eIBeEsJd6nh-crN-SuxROBt4QAUwCQ/exec";
+    // === INCOLLA QUI IL TUO URL DI GOOGLE ===
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOtCvcjHg9qtLxyNXELueopUugvtAfjrT-ieAS5JFXRShfG5x9FJ4njxe2X_nRaK1vYg/exec";
 
-    const oggi = new Date();
-    document.getElementById("display-data").innerText = oggi.toLocaleDateString("it-IT");
-    
-    const utenteSalvato = localStorage.getItem("utenteDogana");
-    if (utenteSalvato) {
-        document.getElementById("n_utente").value = utenteSalvato;
-    }
-
+    // --- NUOVA FUNZIONE: GESTIONE DELLE PAGINE ---
+    // Questa funzione accende la pagina richiesta e spegne le altre
     function cambiaPagina(nomePagina) {
-        if (nomePagina === 'modifica') {
-            let psw = prompt("Area riservata. Inserisci la password:");
-            if (psw !== "4181+") { alert("Password errata o operazione annullata!"); return; }
-        }
-        document.querySelectorAll('.pagina').forEach(p => p.classList.remove('attiva'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('attivo'));
+        // 1. Togliamo la classe "attiva" a tutte le pagine
+        document.getElementById('pagina-nuovo').classList.remove('attiva');
+        document.getElementById('pagina-modifica').classList.remove('attiva');
+        document.getElementById('pagina-cerca').classList.remove('attiva');
+        
+        // 2. Togliamo l'evidenziatore a tutti i bottoni del menu
+        document.getElementById('nav-nuovo').classList.remove('attivo');
+        document.getElementById('nav-modifica').classList.remove('attivo');
+        document.getElementById('nav-cerca').classList.remove('attivo');
+        
+        // 3. Accendiamo solo la pagina richiesta e il suo bottone
         document.getElementById('pagina-' + nomePagina).classList.add('attiva');
         document.getElementById('nav-' + nomePagina).classList.add('attivo');
     }
 
-    async function inviaDati(tipo) {
-        const prefisso = (tipo === 'nuovo') ? 'n_' : 'm_';
-        const btn = document.getElementById('btn-' + tipo);
-        const msg = document.getElementById('msg-' + tipo);
-        
-        let datiDaSpedire = {
-            azione: tipo,
-            nrScheda: document.getElementById(prefisso+'scheda').value,
-            genereVeicolo: document.getElementById(prefisso+'genere').value,
-            targaMotrice: document.getElementById(prefisso+'targa_m').value,
-            targaRimorchio: document.getElementById(prefisso+'targa_r').value,
-            motivoRespingimento: document.getElementById(prefisso+'motivo').value,
-            importoTasse: document.getElementById(prefisso+'tasse').value,
-            mrn: document.getElementById(prefisso+'mrn').value,
-            ttpcp: document.getElementById(prefisso+'ttpcp').value,
-            dogIT: document.getElementById(prefisso+'dog').value,
-            utente: document.getElementById(prefisso+'utente').value,
-            nazionalitaVeicolo: document.getElementById(prefisso+'nazione').value,
-            osservazioni: document.getElementById(prefisso+'note').value,
-            genTraffico: document.getElementById(prefisso+'traffico').value
-        };
-
-        if (tipo === 'nuovo') {
-            if (!datiDaSpedire.genereVeicolo || !datiDaSpedire.nazionalitaVeicolo || !datiDaSpedire.targaMotrice || !datiDaSpedire.motivoRespingimento || !datiDaSpedire.genTraffico || !datiDaSpedire.osservazioni) {
-                msg.style.color = "red";
-                msg.innerText = "Attenzione: Compila tutti i campi con l'asterisco rosso (*) !";
-                return; 
-            }
-            localStorage.setItem("utenteDogana", datiDaSpedire.utente);
-        }
-
-        if (tipo === 'modifica') {
-            datiDaSpedire.numeroDaModificare = document.getElementById('m_cerca_num').value;
-            if (!datiDaSpedire.numeroDaModificare) { msg.style.color="red"; msg.innerText = "Inserisci il numero da modificare!"; return; }
-        }
-
-        btn.disabled = true; btn.innerText = "Attendere..."; msg.innerHTML = "";
-
-        try {
-            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(datiDaSpedire), redirect: "follow" });
-            const risultato = await risposta.json();
-
-            if (risultato.successo) {
-                msg.style.color = "green"; msg.innerText = risultato.messaggio;
-                if(tipo === 'nuovo') { 
-                    document.getElementById("display-numero-nuovo").innerText = risultato.numeroAssegnato; 
-                    document.getElementById("btn-stampa-nuovo").style.display = "inline-block";
-                }
-            } else { msg.style.color = "red"; msg.innerText = risultato.messaggio; }
-        } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di rete."; }
-        
-        btn.disabled = false; btn.innerText = (tipo === 'nuovo') ? "Salva Respingimento" : "Aggiorna Record";
+    // --- FUNZIONI DI DATABASE (Invariate) ---
+    async function inviaNuovoRecord() {
+        const d = { azione: "nuovo", nome: document.getElementById("nuovo_nome").value, targa: document.getElementById("nuovo_targa").value, peso: document.getElementById("nuovo_peso").value };
+        if(!d.nome || !d.targa || !d.peso) { document.getElementById("msg-nuovo").innerHTML = "<span style='color:red'>Compila tutti i campi!</span>"; return; }
+        eseguiChiamata(d, "msg-nuovo", "btn-nuovo", "Crea Nuovo Record");
     }
 
-    async function caricaPerModifica() {
-        const numeroInput = document.getElementById('m_cerca_num').value;
-        const msg = document.getElementById('msg-modifica');
-        if (!numeroInput) { msg.style.color = "red"; msg.innerText = "Inserisci un numero!"; return; }
-        msg.style.color = "black"; msg.innerText = "Caricamento in corso...";
-        try {
-            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ azione: "carica_numero", numeroDaCercare: numeroInput }), redirect: "follow" });
-            const risultato = await risposta.json();
-            if (risultato.successo) {
-                let dati = risultato.datiRecord; 
-                msg.style.color = "green"; msg.innerText = "Dati caricati! Ora puoi modificare.";
-                document.getElementById('m_scheda').value = dati[1];
-                document.getElementById('m_genere').value = dati[2];
-                document.getElementById('m_targa_m').value = dati[3];
-                document.getElementById('m_targa_r').value = dati[4];
-                document.getElementById('m_motivo').value = dati[5];
-                document.getElementById('m_tasse').value = dati[6];
-                document.getElementById('m_mrn').value = dati[7];
-                document.getElementById('m_ttpcp').value = dati[8];
-                document.getElementById('m_dog').value = dati[9];
-                document.getElementById('m_note').value = dati[10];
-                document.getElementById('m_traffico').value = dati[11];
-                document.getElementById('m_utente').value = dati[15];
-                document.getElementById('m_nazione').value = dati[16];
-            } else { msg.style.color = "red"; msg.innerText = risultato.messaggio; }
-        } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di connessione."; }
+    async function inviaModificaRecord() {
+        const d = { azione: "modifica", numeroDaModificare: document.getElementById("mod_numero").value, nome: document.getElementById("mod_nome").value, targa: document.getElementById("mod_targa").value, peso: document.getElementById("mod_peso").value };
+        if(!d.numeroDaModificare || !d.nome || !d.targa || !d.peso) { document.getElementById("msg-modifica").innerHTML = "<span style='color:red'>Compila numero e nuovi dati!</span>"; return; }
+        eseguiChiamata(d, "msg-modifica", "btn-modifica", "Aggiorna Record");
     }
 
-    let risultatiRicerca = []; 
-    let indiceCorrente = 0;    
-
-    async function avviaRicerca() {
+    async function inviaRicerca() {
+        const d = { azione: "cerca", cercaNome: document.getElementById("cerca_nome").value, cercaTarga: document.getElementById("cerca_targa").value, cercaPeso: document.getElementById("cerca_peso").value };
+        const divMsg = document.getElementById("msg-cerca");
         const btn = document.getElementById("btn-cerca");
-        const msg = document.getElementById("msg-cerca");
-        const areaMaschera = document.getElementById("area-risultati-maschera");
-        const datiDaSpedire = { azione: "cerca", cercaTarga: document.getElementById("c_targa").value, cercaMRN: document.getElementById("c_mrn").value, cercaNumero: document.getElementById("c_numero").value };
-        
-        btn.disabled = true; btn.innerText = "Ricerca in corso..."; msg.innerHTML = ""; areaMaschera.style.display = "none"; 
-        
+        const areaTabella = document.getElementById("area-tabella");
+
+        btn.disabled = true; btn.innerText = "Ricerca in corso..."; divMsg.innerHTML = ""; areaTabella.innerHTML = "";
+
         try {
-            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(datiDaSpedire), redirect: "follow" });
+            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(d), redirect: "follow" });
             const risultato = await risposta.json();
+
             if (risultato.successo) {
-                risultatiRicerca = risultato.risultati;
-                if (risultatiRicerca.length === 0) { msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>"; } 
-                else { msg.innerHTML = `<span style='color:blue'>Trovati ${risultatiRicerca.length} record.</span>`; indiceCorrente = 0; mostraRecord(); areaMaschera.style.display = "block"; }
-            } else { msg.style.color = "red"; msg.innerText = risultato.messaggio; }
-        } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di rete."; }
-        btn.disabled = false; btn.innerText = "Trova Respingimenti";
+                var arrayRisultati = risultato.risultati;
+                if (arrayRisultati.length === 0) {
+                    divMsg.innerHTML = "<span style='color:#f39c12'>Nessun risultato trovato.</span>";
+                } else {
+                    divMsg.innerHTML = `<span style='color:#2980b9'>Trovati ${arrayRisultati.length} record.</span>`;
+                    let tabellaHTML = `<table><tr><th>N°</th><th>Nome</th><th>Targa</th><th>Peso</th></tr>`;
+                    for (var i = 0; i < arrayRisultati.length; i++) {
+                        tabellaHTML += `<tr><td><b>${arrayRisultati[i].numero}</b></td><td>${arrayRisultati[i].nome}</td><td>${arrayRisultati[i].targa}</td><td>${arrayRisultati[i].peso} Kg</td></tr>`;
+                    }
+                    tabellaHTML += `</table>`;
+                    areaTabella.innerHTML = tabellaHTML;
+                }
+            } else {
+                divMsg.innerHTML = "<span style='color:red'>" + risultato.messaggio + "</span>";
+            }
+        } catch (errore) { divMsg.innerHTML = "<span style='color:red'>Errore di rete.</span>"; }
+        btn.disabled = false; btn.innerText = "Cerca nel Database";
     }
 
-    function mostraRecord() {
-        const record = risultatiRicerca[indiceCorrente]; 
-        document.getElementById("v_numero").innerText = record.numero;
-        document.getElementById("v_data").innerText = record.data;
-        document.getElementById("v_ora").innerText = record.ora;
-        document.getElementById("v_scheda").value = record.scheda;
-        document.getElementById("v_genere").value = record.genere;
-        document.getElementById("v_targa_m").value = record.targa_m;
-        document.getElementById("v_targa_r").value = record.targa_r;
-        document.getElementById("v_motivo").value = record.motivo;
-        document.getElementById("v_traffico").value = record.traffico;
-        document.getElementById("v_tasse").value = record.tasse;
-        document.getElementById("v_mrn").value = record.mrn;
-        document.getElementById("v_ttpcp").value = record.ttpcp;
-        document.getElementById("v_dog").value = record.dog;
-        document.getElementById("v_utente").value = record.utente;
-        document.getElementById("v_nazione").value = record.nazione;
-        document.getElementById("v_note").value = record.note;
-        document.getElementById("testo-contatore").innerText = `Record ${indiceCorrente + 1} di ${risultatiRicerca.length}`;
-        document.getElementById("btn-indietro").disabled = (indiceCorrente === 0);
-        document.getElementById("btn-avanti").disabled = (indiceCorrente === risultatiRicerca.length - 1);
-    }
-
-    function vaiAvanti() { if (indiceCorrente < risultatiRicerca.length - 1) { indiceCorrente++; mostraRecord(); } }
-    function vaiIndietro() { if (indiceCorrente > 0) { indiceCorrente--; mostraRecord(); } }
-
-    function generaPDF(sorgente) {
-        document.getElementById("modulo-stampa").style.display = "block";
-        const pref = (sorgente === 'nuovo') ? 'n_' : 'v_';
-        
-        document.getElementById("p_numero").innerText = document.getElementById(sorgente === 'nuovo' ? "display-numero-nuovo" : "v_numero").innerText;
-        document.getElementById("p_data").innerText = sorgente === 'nuovo' ? document.getElementById("display-data").innerText : document.getElementById("v_data").innerText;
-        document.getElementById("p_ora").innerText = sorgente === 'nuovo' ? new Date().toLocaleTimeString("it-IT", {hour: '2-digit', minute:'2-digit'}) : document.getElementById("v_ora").innerText;
-        
-        document.getElementById("p_scheda").innerText = document.getElementById(pref + "scheda").value;
-        document.getElementById("p_genere").innerText = document.getElementById(pref + "genere").value;
-        document.getElementById("p_nazione").innerText = document.getElementById(pref + "nazione").value;
-        document.getElementById("p_targa_m").innerText = document.getElementById(pref + "targa_m").value;
-        document.getElementById("p_targa_r").innerText = document.getElementById(pref + "targa_r").value;
-        document.getElementById("p_motivo").innerText = document.getElementById(pref + "motivo").value;
-        document.getElementById("p_mrn").innerText = document.getElementById(pref + "mrn").value;
-        document.getElementById("p_ttpcp").innerText = document.getElementById(pref + "ttpcp").value;
-        document.getElementById("p_dog").innerText = document.getElementById(pref + "dog").value;
-        document.getElementById("p_note").innerText = document.getElementById(pref + "note").value;
-
-        window.print();
-        document.getElementById("modulo-stampa").style.display = "none";
-
-        if (sorgente === 'nuovo') {
-            document.getElementById('n_scheda').value = '';
-            document.getElementById('n_genere').value = '';
-            document.getElementById('n_nazione').value = '';
-            document.getElementById('n_targa_m').value = '';
-            document.getElementById('n_targa_r').value = '';
-            document.getElementById('n_motivo').value = '';
-            document.getElementById('n_traffico').value = '';
-            document.getElementById('n_tasse').value = '';
-            document.getElementById('n_mrn').value = '';
-            document.getElementById('n_ttpcp').value = '';
-            document.getElementById('n_dog').value = '';
-            document.getElementById('n_note').value = '';
-            
-            document.getElementById('display-numero-nuovo').innerText = '...';
-            document.getElementById('msg-nuovo').innerText = '';
-            document.getElementById('btn-stampa-nuovo').style.display = 'none';
-        }
-    }
-
-    // --- NUOVA FUNZIONE: ESPORTA I RISULTATI IN CSV ---
-    function esportaCSV() {
-        if (risultatiRicerca.length === 0) {
-            alert("Nessun record da esportare!");
-            return;
-        }
-
-        // 1. Creiamo le intestazioni delle colonne
-        // Utilizziamo il punto e virgola ";" che è lo standard per aprire i file Excel in Europa senza problemi
-        let contenutoCSV = "Nr. Respingimento;Scheda;Genere;Nazionalita;Targa Motrice;Targa Rimorchio;Motivo;Traffico;Tasse;MRN;TTPCP;Dog_IT;Osservazioni;Mese;Data;Ora;Utente\n";
-
-        // 2. Aggiungiamo ogni record che abbiamo trovato
-        risultatiRicerca.forEach(record => {
-            // Rimuoviamo gli "A capo" dalle note e sostituiamo i ";" interni con virgole per non sballare le colonne in Excel
-            let noteSicure = record.note.replace(/(\r\n|\n|\r)/gm, " ").replace(/;/g, ",");
-            
-            let riga = [
-                record.numero, record.scheda, record.genere, record.nazione,
-                record.targa_m, record.targa_r, record.motivo, record.traffico,
-                record.tasse, record.mrn, record.ttpcp, record.dog,
-                noteSicure, record.mese, record.data, record.ora, record.utente
-            ];
-            
-            contenutoCSV += riga.join(";") + "\n";
-        });
-
-        // 3. Creiamo un "file virtuale" (Blob) e diciamo al browser di scaricarlo
-        const fileVirtuale = new Blob([contenutoCSV], { type: 'text/csv;charset=utf-8;' });
-        const linkDownload = document.createElement("a");
-        const urlFile = URL.createObjectURL(fileVirtuale);
-        
-        linkDownload.setAttribute("href", urlFile);
-        linkDownload.setAttribute("download", "Estrazione_Respingimenti.csv"); // Nome del file
-        linkDownload.style.visibility = 'hidden';
-        
-        document.body.appendChild(linkDownload);
-        linkDownload.click(); // Simula il click dell'utente per scaricare
-        document.body.removeChild(linkDownload);
+    async function eseguiChiamata(dati, idMsg, idBtn, testoOriginaleBtn) {
+        const divMsg = document.getElementById(idMsg);
+        const btn = document.getElementById(idBtn);
+        btn.disabled = true; btn.innerText = "Attendere..."; divMsg.innerHTML = "";
+        try {
+            const risposta = await fetch(GOOGLE_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(dati), redirect: "follow" });
+            const risultato = await risposta.json();
+            if(risultato.successo) {
+                divMsg.innerHTML = `<span style='color:#27ae60'>${risultato.messaggio}</span> <span class="numero-gigante" style="color:#d35400;">${risultato.numeroAssegnato}</span>`;
+            } else { divMsg.innerHTML = `<span style='color:red'>${risultato.messaggio}</span>`; }
+        } catch (errore) { divMsg.innerHTML = "<span style='color:red'>Errore di rete.</span>"; }
+        btn.disabled = false; btn.innerText = testoOriginaleBtn;
     }
 </script>
 
