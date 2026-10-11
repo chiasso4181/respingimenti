@@ -6,12 +6,19 @@
     <title>Respingimenti Dogana Chiasso</title>
     <style>
         /* --- STILI GENERALI (Schermo) --- */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
         
         .navbar { background-color: #1f4e79; display: flex; justify-content: center; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .nav-btn { background-color: transparent; color: white; border: none; padding: 10px 20px; margin: 0 5px; font-size: 1.1rem; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .nav-btn:hover { background-color: #1a4164; }
         .nav-btn.attivo { background-color: #f39c12; color: #fff; } 
+
+        .sidebar { background-color: #1f4e79; width: 230px; display: flex; flex-direction: column; padding-top: 30px; box-shadow: 2px 0 5px rgba(0,0,0,0.2); z-index: 10; }
+        .nav-btn { background-color: transparent; color: white; border: none; padding: 15px 20px; margin: 5px 10px; font-size: 1.1rem; cursor: pointer; border-radius: 4px; font-weight: bold; text-align: left; transition: 0.2s; }
+        .nav-btn:hover { background-color: #1a4164; }
+        .nav-btn.attivo { background-color: #f39c12; color: #fff; } 
+
+        .main-content { flex: 1; padding: 20px; overflow-y: auto; background-color: #e9ecef; }
 
         .pagina { display: none; margin: 0 auto; width: 100%; max-width: 900px; background-color: #f8f9fa; border: 2px solid #ccc; padding: 20px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); box-sizing: border-box;}
         .pagina.attiva { display: block; }
@@ -48,6 +55,7 @@
         /* --- STILI PER LA STAMPA PDF --- */
         @media print {
             @page { size: A4; margin: 0; } 
+            body { display: block; height: auto; overflow: visible; }
             body * { visibility: hidden; } 
             #modulo-stampa, #modulo-stampa * { visibility: visible; }
             #modulo-stampa { position: absolute; left: 0; top: 0; width: 100%; padding: 2cm; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; color: #333;}
@@ -68,180 +76,193 @@
 </head>
 <body>
 
-<!-- NAVIGAZIONE -->
-<div class="navbar">
-    <button class="nav-btn attivo" id="nav-nuovo" onclick="cambiaPagina('nuovo')">Nuovo Respingimento</button>
-    <button class="nav-btn" id="nav-modifica" onclick="cambiaPagina('modifica')">Modifica Dati</button>
-    <button class="nav-btn" id="nav-cerca" onclick="cambiaPagina('cerca')">Ricerca Avanzata</button>
+<!-- NAVIGAZIONE LATERALE -->
+<div class="sidebar">
+    <div style="color: white; text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 30px; border-bottom: 1px solid #1a4164; padding-bottom: 15px;">
+        DOGANA<br>CHIASSO
+    </div>
+    <button class="nav-btn attivo" id="nav-nuovo" onclick="cambiaPagina('nuovo')">✏️ Nuovo Respingimento</button>
+    <button class="nav-btn" id="nav-modifica" onclick="cambiaPagina('modifica')">⚙️ Modifica Dati</button>
+    <button class="nav-btn" id="nav-cerca" onclick="cambiaPagina('cerca')">🔍 Ricerca Avanzata</button>
 </div>
 
-<!-- ========================================== -->
-<!-- PAGINA 1: NUOVO                            -->
-<!-- ========================================== -->
-<div id="pagina-nuovo" class="pagina attiva">
-    <div class="header-section">
-        <div class="titolo-box">
-            <h1>NUOVO Respingimento Nr.</h1>
-            <div id="display-numero-nuovo" class="numero-giallo">...</div>
-        </div>
-        <div style="text-align: right; font-weight: bold; padding: 10px;">
-            Data: <span id="display-data"></span>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Scheda</label><input type="text" id="n_scheda"></div>
-        <div class="grid-item" style="flex: 2;"><label>Genere veicolo <span class="obbligatorio">*</span></label>
-            <select id="n_genere">
-                <option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option>
-            </select>
-        </div>
-        <div class="grid-item"><label>Nazionalità Veicolo <span class="obbligatorio">*</span></label>
-            <select id="n_nazione">
-                <option value="">-- Seleziona --</option>
-                <option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
-            </select>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Targa Motrice <span class="obbligatorio">*</span></label><input type="text" id="n_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="n_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento <span class="obbligatorio">*</span></label>
-            <select id="n_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Sovradimensionato">Sovradimensionato</option><option value="Veicolo in cattivo stato">Veicolo in cattivo stato</option><option value="Fase Rossa">Fase Rossa</option><option value="Veicolo vuoto">Veicolo vuoto</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Libretto di circolazione non valido o mancante">Libretto di circolazione non valido</option><option value="Licenza di guida non valida o mancante">Licenza di guida non valida</option><option value="Documento di identità non valido o mancante">Documento di identità non valido</option><option value="Altri motivi del trasportatore">Altri motivi del trasportatore</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Traffico <span class="obbligatorio">*</span></label><select id="n_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
-        <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="n_tasse"></div>
-        <div class="grid-item"><label>MRN</label><input type="text" id="n_mrn"></div>
-        <div class="grid-item"><label>TTPCP</label><input type="text" id="n_ttpcp"></div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Dog. IT</label><input type="text" id="n_dog"></div>
-        <div class="grid-item"><label>Utente</label><input type="text" id="n_utente"></div>
-    </div>
-    
-    <div class="osservazioni-box"><label>Osservazioni <span class="obbligatorio">*</span></label><textarea id="n_note"></textarea></div>
-    
-    <div class="button-section">
-        <button id="btn-nuovo" class="btn-main" onclick="inviaDati('nuovo')">Salva Respingimento</button>
-        <button id="btn-stampa-nuovo" class="btn-main" style="background-color: #3498db; color: white; display: none;" onclick="generaPDF('nuovo')">🖨️ Stampa Modulo PDF</button>
-        <div id="msg-nuovo" class="messaggio-esito"></div>
-    </div>
-</div>
+<!-- CONTENITORE PRINCIPALE DI DESTRA -->
+<div class="main-content">
 
-<!-- ========================================== -->
-<!-- PAGINA 2: MODIFICA                         -->
-<!-- ========================================== -->
-<div id="pagina-modifica" class="pagina">
-    <div class="header-section">
-        <div class="titolo-box" style="border-color: #f39c12; width: 100%;">
-            <h1 style="color: #f39c12; border-color: #f39c12;">MODIFICA Respingimento Nr.</h1>
-            <div style="display: flex; gap: 10px; width: 95%; margin: 0 auto; margin-top: 10px;">
-                <input type="number" id="m_cerca_num" placeholder="Digita il numero qui..." class="numero-giallo" style="flex: 3; border: 1px solid #ccc; text-align: center; margin-top: 0;">
-                <button onclick="caricaPerModifica()" style="flex: 1; background: #f39c12; color: white; border: 2px solid #333; font-weight: bold; cursor: pointer; font-size: 1.1rem;">Carica Dati</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="grid-row">
-        <div class="grid-item"><label>Nuova Scheda</label><input type="text" id="m_scheda"></div>
-        <div class="grid-item" style="flex: 2;"><label>Nuovo Genere</label><select id="m_genere"><option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option></select></div>
-        <div class="grid-item"><label>Nazionalità Veicolo</label>
-            <select id="m_nazione">
-                <option value="">-- Seleziona --</option><option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
-            </select>
-        </div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Nuova Targa M.</label><input type="text" id="m_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Nuova Targa R.</label><input type="text" id="m_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
-        <div class="grid-item" style="flex: 2;"><label>Nuovo Motivo</label><select id="m_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Fase Rossa">Fase Rossa</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select></div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Traffico</label><select id="m_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
-        <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="m_tasse"></div>
-        <div class="grid-item"><label>MRN</label><input type="text" id="m_mrn"></div>
-        <div class="grid-item"><label>TTPCP</label><input type="text" id="m_ttpcp"></div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-item"><label>Dog. IT</label><input type="text" id="m_dog"></div>
-        <div class="grid-item"><label>Utente</label><input type="text" id="m_utente"></div>
-    </div>
-    <div class="osservazioni-box"><label>Nuove Osservazioni</label><textarea id="m_note"></textarea></div>
-    
-    <div class="button-section">
-        <button id="btn-modifica" class="btn-main" onclick="inviaDati('modifica')">Aggiorna Record</button>
-        <div id="msg-modifica" class="messaggio-esito"></div>
-    </div>
-</div>
-
-<!-- ========================================== -->
-<!-- PAGINA 3: CERCA E STAMPA / ESPORTA         -->
-<!-- ========================================== -->
-<div id="pagina-cerca" class="pagina">
-    <h2 style="text-align: center; color: #1f4e79; margin-top: 0;">Ricerca Avanzata (Usa * come Jolly)</h2>
-    
-    <div class="grid-row" style="background: #e9ecef; padding: 10px; border: 1px solid #ccc;">
-        <div class="grid-item"><label>Cerca Targa (Motrice/Rimorchio)</label><input type="text" id="c_targa" placeholder="Es. TI*" oninput="this.value = this.value.replace(/[^a-zA-Z0-9*]/g, '').toUpperCase();"></div>
-        <div class="grid-item"><label>Cerca MRN</label><input type="text" id="c_mrn" placeholder="Es. *234*"></div>
-        <div class="grid-item"><label>Cerca Nr. Respingimento</label><input type="text" id="c_numero" placeholder="Es. 13"></div>
-    </div>
-
-    <div class="button-section" style="margin-top: 0; margin-bottom: 20px;">
-        <button id="btn-cerca" class="btn-main" onclick="avviaRicerca()" style="background: #2980b9; color: white;">Trova Respingimenti</button>
-        <div id="msg-cerca" class="messaggio-esito"></div>
-    </div>
-    
-    <div id="area-risultati-maschera" style="display: none; border-top: 2px dashed #999; padding-top: 20px;">
-        
-        <div class="barra-navigazione">
-            <button class="btn-freccia" id="btn-indietro" onclick="vaiIndietro()">◄ Prec.</button>
-            <span id="testo-contatore">Record 1 di X</span>
-            <button class="btn-freccia" id="btn-avanti" onclick="vaiAvanti()">Succ. ►</button>
-        </div>
-
+    <!-- ========================================== -->
+    <!-- PAGINA 1: NUOVO                            -->
+    <!-- ========================================== -->
+    <div id="pagina-nuovo" class="pagina attiva">
         <div class="header-section">
-            <div class="titolo-box" style="border-color: #2980b9;">
-                <h1 style="color: #2980b9; border-color: #2980b9;">RISULTATO Respingimento Nr.</h1>
-                <div id="v_numero" class="numero-giallo">...</div>
+            <div class="titolo-box">
+                <h1>NUOVO Respingimento Nr.</h1>
+                <div id="display-numero-nuovo" class="numero-giallo">...</div>
             </div>
-            <div style="text-align: right; font-weight: bold; font-size: 0.9rem; color: #555;">
-                Registrato il: <span id="v_data"></span> alle <span id="v_ora"></span>
+            <div style="text-align: right; font-weight: bold; padding: 10px;">
+                Data: <span id="display-data"></span>
             </div>
         </div>
-
+        
         <div class="grid-row">
-            <div class="grid-item"><label>Scheda</label><input type="text" id="v_scheda" readonly></div>
-            <div class="grid-item" style="flex: 2;"><label>Genere veicolo</label><input type="text" id="v_genere" readonly></div>
-            <div class="grid-item"><label>Nazionalità Veicolo</label><input type="text" id="v_nazione" readonly></div>
+            <div class="grid-item"><label>Scheda</label><input type="text" id="n_scheda"></div>
+            <div class="grid-item" style="flex: 2;"><label>Genere veicolo <span class="obbligatorio">*</span></label>
+                <select id="n_genere">
+                    <option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option>
+                </select>
+            </div>
+            <div class="grid-item"><label>Nazionalità Veicolo <span class="obbligatorio">*</span></label>
+                <select id="n_nazione">
+                    <option value="">-- Seleziona --</option>
+                    <option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
+                </select>
+            </div>
         </div>
+        
         <div class="grid-row">
-            <div class="grid-item"><label>Targa Motrice</label><input type="text" id="v_targa_m" readonly></div>
-            <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="v_targa_r" readonly></div>
-            <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento</label><input type="text" id="v_motivo" readonly></div>
+            <div class="grid-item"><label>Targa Motrice <span class="obbligatorio">*</span></label><input type="text" id="n_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
+            <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="n_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
+            <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento <span class="obbligatorio">*</span></label>
+                <select id="n_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Sovradimensionato">Sovradimensionato</option><option value="Veicolo in cattivo stato">Veicolo in cattivo stato</option><option value="Fase Rossa">Fase Rossa</option><option value="Veicolo vuoto">Veicolo vuoto</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Libretto di circolazione non valido o mancante">Libretto di circolazione non valido</option><option value="Licenza di guida non valida o mancante">Licenza di guida non valida</option><option value="Documento di identità non valido o mancante">Documento di identità non valido</option><option value="Altri motivi del trasportatore">Altri motivi del trasportatore</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select>
+            </div>
         </div>
+        
         <div class="grid-row">
-            <div class="grid-item"><label>Traffico</label><input type="text" id="v_traffico" readonly></div>
-            <div class="grid-item"><label>Tasse (Fr)</label><input type="text" id="v_tasse" readonly></div>
-            <div class="grid-item"><label>MRN</label><input type="text" id="v_mrn" readonly></div>
-            <div class="grid-item"><label>TTPCP</label><input type="text" id="v_ttpcp" readonly></div>
+            <div class="grid-item"><label>Traffico <span class="obbligatorio">*</span></label><select id="n_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
+            <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="n_tasse"></div>
+            <div class="grid-item"><label>MRN</label><input type="text" id="n_mrn"></div>
+            <div class="grid-item"><label>TTPCP</label><input type="text" id="n_ttpcp"></div>
         </div>
+        
         <div class="grid-row">
-            <div class="grid-item"><label>Dog. IT</label><input type="text" id="v_dog" readonly></div>
-            <div class="grid-item"><label>Utente</label><input type="text" id="v_utente" readonly></div>
+            <div class="grid-item"><label>Dog. IT</label><input type="text" id="n_dog"></div>
+            <div class="grid-item"><label>Utente</label><input type="text" id="n_utente"></div>
         </div>
-        <div class="osservazioni-box"><label>Osservazioni</label><textarea id="v_note" readonly></textarea></div>
+        
+        <div class="osservazioni-box"><label>Osservazioni <span class="obbligatorio">*</span></label><textarea id="n_note"></textarea></div>
         
         <div class="button-section">
-            <button class="btn-main" style="background-color: #3498db; color: white;" onclick="generaPDF('ricerca')">🖨️ Stampa Modulo PDF</button>
-            <button class="btn-main" style="background-color: #27ae60; color: white;" onclick="esportaCSV()">📥 Esporta CSV</button>
+            <button id="btn-nuovo" class="btn-main" onclick="inviaDati('nuovo')">Salva Respingimento</button>
+            <button id="btn-stampa-nuovo" class="btn-main" style="background-color: #3498db; color: white; display: none;" onclick="generaPDF('nuovo')">🖨️ Stampa Modulo PDF</button>
+            <div id="msg-nuovo" class="messaggio-esito"></div>
         </div>
     </div>
-</div>
+
+    <!-- ========================================== -->
+    <!-- PAGINA 2: MODIFICA                         -->
+    <!-- ========================================== -->
+    <div id="pagina-modifica" class="pagina">
+        <div class="header-section">
+            <div class="titolo-box" style="border-color: #f39c12; width: 100%;">
+                <h1 style="color: #f39c12; border-color: #f39c12;">MODIFICA Respingimento Nr.</h1>
+                <div style="display: flex; gap: 10px; width: 95%; margin: 0 auto; margin-top: 10px;">
+                    <input type="number" id="m_cerca_num" placeholder="Digita il numero qui..." class="numero-giallo" style="flex: 3; border: 1px solid #ccc; text-align: center; margin-top: 0;">
+                    <button onclick="caricaPerModifica()" style="flex: 1; background: #f39c12; color: white; border: 2px solid #333; font-weight: bold; cursor: pointer; font-size: 1.1rem;">Carica Dati</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid-row">
+            <div class="grid-item"><label>Nuova Scheda</label><input type="text" id="m_scheda"></div>
+            <div class="grid-item" style="flex: 2;"><label>Nuovo Genere</label><select id="m_genere"><option value="">-- Seleziona --</option><option value="Autocarro">Autocarro</option><option value="Autocarro+rimorchio">Autocarro+rimorchio</option><option value="Trattore a sella">Trattore a sella</option><option value="Trattore a sella+semirimorchio">Trattore a sella+semirimorchio</option><option value="Autovettura">Autovettura</option><option value="Furgone">Furgone</option></select></div>
+            <div class="grid-item"><label>Nazionalità Veicolo</label>
+                <select id="m_nazione">
+                    <option value="">-- Seleziona --</option><option value="ALB">ALB - Albania</option><option value="AUT">AUT - Austria</option><option value="BEL">BEL - Belgio</option><option value="BLR">BLR - Bielorussia</option><option value="BIH">BIH - Bosnia ed E.</option><option value="BGR">BGR - Bulgaria</option><option value="HRV">HRV - Croazia</option><option value="EST">EST - Estonia</option><option value="FRA">FRA - Francia</option><option value="DEU">DEU - Germania</option><option value="GBR">GBR - Regno Unito</option><option value="GRC">GRC - Grecia</option><option value="ITA">ITA - Italia</option><option value="XKX">XKX - Kosovo</option><option value="LVA">LVA - Lettonia</option><option value="LIE">LIE - Liechtenstein</option><option value="LTU">LTU - Lituania</option><option value="MKD">MKD - Macedonia del Nord</option><option value="MDA">MDA - Moldavia</option><option value="MNE">MNE - Montenegro</option><option value="NLD">NLD - Paesi Bassi</option><option value="POL">POL - Polonia</option><option value="PRT">PRT - Portogallo</option><option value="CZE">CZE - Rep. Ceca</option><option value="ROU">ROU - Romania</option><option value="RUS">RUS - Russia</option><option value="SRB">SRB - Serbia</option><option value="SVK">SVK - Slovacchia</option><option value="SVN">SVN - Slovenia</option><option value="ESP">ESP - Spagna</option><option value="CHE">CHE - Svizzera</option><option value="UKR">UKR - Ucraina</option><option value="HUN">HUN - Ungheria</option><option value="ALTRO">ALTRO...</option>
+                </select>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-item"><label>Nuova Targa M.</label><input type="text" id="m_targa_m" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
+            <div class="grid-item"><label>Nuova Targa R.</label><input type="text" id="m_targa_r" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();"></div>
+            <div class="grid-item" style="flex: 2;"><label>Nuovo Motivo</label><select id="m_motivo"><option value="">-- Seleziona --</option><option value="Soprapeso">Soprapeso</option><option value="Superiore a 40 T">Superiore a 40 T</option><option value="Fase Rossa">Fase Rossa</option><option value="Documenti doganali con irregolarità o mancanti">Documenti doganali mancanti</option><option value="Altri motivi dell'ufficio (con osservazioni !!)">Altri motivi (vedi note)</option></select></div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-item"><label>Traffico</label><select id="m_traffico"><option value="">-</option><option value="Transito">Transito</option><option value="Import">Import</option><option value="Misto">Misto</option></select></div>
+            <div class="grid-item"><label>Tasse (Fr)</label><input type="number" id="m_tasse"></div>
+            <div class="grid-item"><label>MRN</label><input type="text" id="m_mrn"></div>
+            <div class="grid-item"><label>TTPCP</label><input type="text" id="m_ttpcp"></div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-item"><label>Dog. IT</label><input type="text" id="m_dog"></div>
+            <div class="grid-item"><label>Utente</label><input type="text" id="m_utente"></div>
+        </div>
+        <div class="osservazioni-box"><label>Nuove Osservazioni</label><textarea id="m_note"></textarea></div>
+        
+        <div class="button-section">
+            <button id="btn-modifica" class="btn-main" onclick="inviaDati('modifica')">Aggiorna Record</button>
+            <div id="msg-modifica" class="messaggio-esito"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGINA 3: CERCA E STAMPA / ESPORTA         -->
+    <!-- ========================================== -->
+    <div id="pagina-cerca" class="pagina">
+        
+        <div style="background: #e9ecef; padding: 10px; border: 1px solid #ccc; margin-bottom: 20px;">
+            <div class="grid-row" style="margin-bottom: 0;">
+                <div class="grid-item">
+                    <label title="Usa l'asterisco * come Jolly per ricerche parziali (es. TI* per tutte le targhe Ticinesi)">Cerca Targa (Motrice/Rimorchio)</label>
+                    <input type="text" id="c_targa" title="Usa l'asterisco * come Jolly per ricerche parziali (es. TI* per tutte le targhe Ticinesi)" placeholder="Es. TI*" oninput="this.value = this.value.replace(/[^a-zA-Z0-9*]/g, '').toUpperCase();">
+                </div>
+                <div class="grid-item"><label>Cerca MRN</label><input type="text" id="c_mrn" placeholder="Es. *234*"></div>
+                <div class="grid-item"><label>Cerca Nr. Respingimento</label><input type="text" id="c_numero" placeholder="Es. 13"></div>
+            </div>
+        </div>
+
+        <!-- Sezione pulsante allineata orizzontalmente usando flexbox -->
+        <div class="button-section" style="margin-top: 0; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <button id="btn-cerca" class="btn-main" onclick="avviaRicerca()" style="background: #2980b9; color: white; margin: 0;">Trova Respingimenti</button>
+            <div id="msg-cerca" class="messaggio-esito" style="margin-top: 0;"></div>
+        </div>
+        
+        <div id="area-risultati-maschera" style="display: none; border-top: 2px dashed #999; padding-top: 20px;">
+            
+            <div class="barra-navigazione">
+                <button class="btn-freccia" id="btn-indietro" onclick="vaiIndietro()">◄ Prec.</button>
+                <span id="testo-contatore">Record 1 di X</span>
+                <button class="btn-freccia" id="btn-avanti" onclick="vaiAvanti()">Succ. ►</button>
+            </div>
+
+            <div class="header-section">
+                <div class="titolo-box" style="border-color: #2980b9;">
+                    <h1 style="color: #2980b9; border-color: #2980b9;">RISULTATO Respingimento Nr.</h1>
+                    <div id="v_numero" class="numero-giallo">...</div>
+                </div>
+                <div style="text-align: right; font-weight: bold; font-size: 0.9rem; color: #555;">
+                    Registrato il: <span id="v_data"></span> alle <span id="v_ora"></span>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="grid-item"><label>Scheda</label><input type="text" id="v_scheda" readonly></div>
+                <div class="grid-item" style="flex: 2;"><label>Genere veicolo</label><input type="text" id="v_genere" readonly></div>
+                <div class="grid-item"><label>Nazionalità Veicolo</label><input type="text" id="v_nazione" readonly></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-item"><label>Targa Motrice</label><input type="text" id="v_targa_m" readonly></div>
+                <div class="grid-item"><label>Targa rimorchio</label><input type="text" id="v_targa_r" readonly></div>
+                <div class="grid-item" style="flex: 2;"><label>Motivo del respingimento</label><input type="text" id="v_motivo" readonly></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-item"><label>Traffico</label><input type="text" id="v_traffico" readonly></div>
+                <div class="grid-item"><label>Tasse (Fr)</label><input type="text" id="v_tasse" readonly></div>
+                <div class="grid-item"><label>MRN</label><input type="text" id="v_mrn" readonly></div>
+                <div class="grid-item"><label>TTPCP</label><input type="text" id="v_ttpcp" readonly></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-item"><label>Dog. IT</label><input type="text" id="v_dog" readonly></div>
+                <div class="grid-item"><label>Utente</label><input type="text" id="v_utente" readonly></div>
+            </div>
+            <div class="osservazioni-box"><label>Osservazioni</label><textarea id="v_note" readonly></textarea></div>
+            
+            <div class="button-section">
+                <button class="btn-main" style="background-color: #3498db; color: white;" onclick="generaPDF('ricerca')">🖨️ Stampa Modulo PDF</button>
+                <button class="btn-main" style="background-color: #27ae60; color: white;" onclick="esportaCSV()">📥 Esporta CSV</button>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- FINE MAIN CONTENT -->
 
 <!-- ========================================== -->
 <!-- MASCHERA DI STAMPA NASCOSTA (Per il PDF)   -->
@@ -420,14 +441,14 @@
             const risultato = await risposta.json();
             
             if (risultato.successo) {
-                // --- INVERSIONE DELLA LISTA (dal più recente al più vecchio) ---
                 risultatiRicerca = risultato.risultati.reverse();
                 
                 if (risultatiRicerca.length === 0) { 
                     msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>"; 
                 } 
                 else { 
-                    msg.innerHTML = `<span style='color:blue'>Trovati ${risultatiRicerca.length} record.</span>`; 
+                    // Messaggio ridondante rimosso: lasciamo che sia il blocco di navigazione a mostrare i record!
+                    msg.innerHTML = ""; 
                     indiceCorrente = 0; 
                     mostraRecord(); 
                     areaMaschera.style.display = "block"; 
