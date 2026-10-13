@@ -332,16 +332,35 @@
 <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCvoiqkkn4Zl3EFkshbf7338XTfq4ivpvbLDx0eIBeEsJd6nh-crN-SuxROBt4QAUwCQ/exec";
 
-    // CARICAMENTO INIZIALE E LETTURA UTENTE
+    // --- NUOVA GESTIONE UTENTE CON LOCALSTORAGE ---
+    function controllaUtenteObbligatorio() {
+        // Cerchiamo il nome utente nella memoria locale del browser
+        let nomeUtente = localStorage.getItem("utenteDogana");
+        
+        // Continua a chiedere finché l'utente non inserisce qualcosa di valido
+        while (!nomeUtente || nomeUtente.trim() === "") {
+            nomeUtente = prompt("Inserisci il tuo Nome Utente per accedere al modulo (Obbligatorio):");
+            
+            // Se l'utente ha scritto qualcosa, lo salviamo in modo permanente
+            if (nomeUtente && nomeUtente.trim() !== "") {
+                localStorage.setItem("utenteDogana", nomeUtente.trim());
+            }
+        }
+        
+        // Inserisce automaticamente il nome nei campi predisposti
+        document.getElementById("n_utente").value = nomeUtente.trim();
+        document.getElementById("m_utente").value = nomeUtente.trim();
+    }
+
+    // --- CARICAMENTO INIZIALE ---
     const oggi = new Date();
     document.getElementById("display-data").innerText = oggi.toLocaleDateString("it-IT");
     
-    const utenteSalvato = localStorage.getItem("utenteDogana");
-    if (utenteSalvato) {
-        document.getElementById("n_utente").value = utenteSalvato;
-    }
+    // Avvia la verifica del nome utente all'apertura
+    controllaUtenteObbligatorio();
 
-    // NAVIGAZIONE
+
+    // --- NAVIGAZIONE ---
     function cambiaPagina(nomePagina) {
         if (nomePagina === 'modifica') {
             let psw = prompt("Area riservata. Inserisci la password:");
@@ -353,7 +372,7 @@
         document.getElementById('nav-' + nomePagina).classList.add('attivo');
     }
 
-    // SALVA O MODIFICA DATI
+    // --- SALVA O MODIFICA DATI ---
     async function inviaDati(tipo) {
         const prefisso = (tipo === 'nuovo') ? 'n_' : 'm_';
         const btn = document.getElementById('btn-' + tipo);
@@ -382,6 +401,7 @@
                 msg.innerText = "Attenzione: Compila tutti i campi con l'asterisco rosso (*) !";
                 return; 
             }
+            // Aggiorna il localStorage nel caso l'utente abbia modificato il campo manualmente prima di salvare
             localStorage.setItem("utenteDogana", datiDaSpedire.utente);
         }
 
@@ -421,7 +441,7 @@
         }
     }
 
-    // CARICA PER MODIFICA
+    // --- CARICA PER MODIFICA ---
     async function caricaPerModifica() {
         const numeroInput = document.getElementById('m_cerca_num').value;
         const msg = document.getElementById('msg-modifica');
@@ -450,7 +470,7 @@
         } catch (e) { msg.style.color = "red"; msg.innerText = "Errore di connessione."; }
     }
 
-    // RICERCA E VISUALIZZAZIONE
+    // --- RICERCA E VISUALIZZAZIONE ---
     let risultatiRicerca = []; 
     let indiceCorrente = 0;    
 
@@ -470,11 +490,9 @@
                 risultatiRicerca = risultato.risultati.reverse();
                 
                 if (risultatiRicerca.length === 0) { 
-                    // Se non trova niente, mettiamo il messaggio arancione accanto al bottone!
                     msg.innerHTML = "<span style='color:orange'>Nessun risultato trovato.</span>"; 
                 } 
                 else { 
-                    // Lasciamo vuoto lo spazio accanto al bottone e visualizziamo i risultati!
                     msg.innerHTML = ""; 
                     indiceCorrente = 0; 
                     mostraRecord(); 
@@ -511,7 +529,7 @@
     function vaiAvanti() { if (indiceCorrente < risultatiRicerca.length - 1) { indiceCorrente++; mostraRecord(); } }
     function vaiIndietro() { if (indiceCorrente > 0) { indiceCorrente--; mostraRecord(); } }
 
-    // STAMPA PDF
+    // --- STAMPA PDF ---
     function generaPDF(sorgente) {
         document.getElementById("modulo-stampa").style.display = "block";
         const pref = (sorgente === 'nuovo') ? 'n_' : 'v_';
@@ -555,10 +573,13 @@
             const btnNuovo = document.getElementById('btn-nuovo');
             btnNuovo.disabled = false;
             btnNuovo.innerText = "Salva Respingimento";
+            
+            // Re-inserisce il nome utente letto dal localStorage dopo aver pulito i campi
+            document.getElementById('n_utente').value = localStorage.getItem("utenteDogana");
         }
     }
 
-    // ESPORTA CSV
+    // --- ESPORTA CSV ---
     function esportaCSV() {
         if (risultatiRicerca.length === 0) { alert("Nessun record da esportare!"); return; }
         let contenutoCSV = "Nr. Respingimento;Scheda;Genere;Nazionalita;Targa Motrice;Targa Rimorchio;Motivo;Traffico;Tasse;MRN;TTPCP;Dog_IT;Osservazioni;Mese;Data;Ora;Utente\n";
@@ -578,6 +599,5 @@
         document.body.removeChild(linkDownload);
     }
 </script>
-
 </body>
 </html>
